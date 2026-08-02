@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>教學醫院評鑑改善進度 線上填報｜佳里奇美醫院</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  html{-webkit-text-size-adjust:100%;}
+  body{background-color:#0b1329;color:#e2e8f0;}
+  .glass-card{background:rgba(255,255,255,.03);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.08);}
+  .fld{width:100%;background:rgba(15,23,42,.6);border:1px solid rgba(51,65,85,.6);border-radius:.75rem;padding:.65rem .9rem;color:#fff;font-size:16px;}
+  .fld:focus{outline:none;box-shadow:0 0 0 2px #0ea5e9;}
+  textarea.fld{min-height:150px;line-height:1.7;}
+  .badge{display:inline-flex;align-items:center;gap:.35rem;font-weight:700;border-radius:9999px;padding:.15rem .7rem;font-size:.8rem;}
+  @media (max-width:640px){ textarea.fld{min-height:130px;} }
+</style>
+</head>
+<body class="font-sans min-h-screen py-10 px-4 sm:px-6">
+<div class="max-w-4xl mx-auto">
+
+  <!-- ============ 填報畫面 ============ -->
+  <div id="fillView">
+    <div class="text-center mb-8">
+      <p class="text-sm text-sky-400 font-semibold mb-1">佳里奇美醫院 教學研究組</p>
+      <h1 class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight mb-3" id="pageTitle">教學醫院評鑑委員意見改善進度 線上填報</h1>
+      <p class="text-slate-400 text-sm">請選擇您的職類，系統會帶出您負責的條號與上次填報內容，更新後送出即可。</p>
+    </div>
+
+    <div class="glass-card rounded-2xl p-4 mb-6 text-sm text-amber-200/90 flex items-start gap-3">
+      <i class="fa-solid fa-circle-info mt-1 text-amber-400"></i>
+      <div>
+        <b>填報截止：<span id="deadlineTxt">—</span>（當日 24:00 前）。</b><br>
+        送出後系統會 email 通知教研組，並副本一份給您留存；您也可按「下載我的 Word 存檔」自行備份。若「預定完成年月」需要修改，也可以直接於欄位調整或用日曆重選。
+      </div>
+    </div>
+
+    <!-- 基本資料 + 選職類 -->
+    <div class="glass-card rounded-2xl p-5 sm:p-6 mb-6">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="sm:col-span-2">
+          <label class="block text-sm font-medium text-slate-300 mb-1.5">職類 <span class="text-rose-500">*</span></label>
+          <select id="roleSel" class="fld"><option value="">— 請選擇您的職類 —</option></select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-300 mb-1.5">填表人姓名 <span class="text-rose-500">*</span></label>
+          <input id="filler" class="fld" placeholder="請輸入姓名">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-300 mb-1.5">分機</label>
+          <input id="ext" class="fld" placeholder="院內分機">
+        </div>
+        <div class="sm:col-span-2">
+          <label class="block text-sm font-medium text-slate-300 mb-1.5">您的 Email（用於接收副本存查）</label>
+          <input id="email" type="email" class="fld" placeholder="example@mail.chimei.org.tw">
+        </div>
+      </div>
+    </div>
+
+    <div id="hintPick" class="text-center text-slate-500 py-10">
+      <i class="fa-regular fa-hand-pointer text-3xl mb-3 block"></i>請先於上方選擇職類，即可載入您負責的條號。
+    </div>
+
+    <div id="cards" class="space-y-5"></div>
+
+    <div id="actionBar" class="hidden mt-8 flex flex-col sm:flex-row gap-3">
+      <button id="submitBtn" class="flex-1 bg-gradient-to-r from-sky-600 to-blue-700 text-white font-bold py-3.5 rounded-xl shadow-lg hover:from-sky-500 hover:to-blue-600 active:scale-[.99] transition disabled:opacity-50">
+        <i class="fa-solid fa-paper-plane mr-2"></i>送 出 更 新
+      </button>
+      <button id="wordBtn" class="sm:w-64 bg-slate-700/70 text-white font-bold py-3.5 rounded-xl hover:bg-slate-600 transition">
+        <i class="fa-solid fa-file-word mr-2"></i>下載我的 Word 存檔
+      </button>
+    </div>
+  </div>
+
+  <!-- ============ 承辦人彙整後台 ============ -->
+  <div id="adminView" class="hidden">
+    <div class="text-center mb-8">
+      <p class="text-sm text-sky-400 font-semibold mb-1">教學研究組 · 承辦人彙整後台</p>
+      <h1 class="text-2xl sm:text-3xl font-extrabold text-white mb-2">填報進度彙整</h1>
+      <p class="text-slate-400 text-sm" id="adminSub">—</p>
+    </div>
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6" id="adminStats"></div>
+    <div class="glass-card rounded-2xl p-5 mb-6">
+      <div class="flex flex-wrap gap-3">
+        <button id="aggBtn" class="bg-gradient-to-r from-emerald-600 to-teal-700 text-white font-bold py-3 px-5 rounded-xl hover:from-emerald-500 transition"><i class="fa-solid fa-file-word mr-2"></i>下載彙整一覽表（Word）</button>
+        <button id="copyNagBtn" class="bg-slate-700/70 text-white font-bold py-3 px-5 rounded-xl hover:bg-slate-600 transition"><i class="fa-solid fa-copy mr-2"></i>複製待催填名單</button>
+        <button id="refreshBtn" class="bg-slate-700/70 text-white font-bold py-3 px-5 rounded-xl hover:bg-slate-600 transition"><i class="fa-solid fa-rotate mr-2"></i>重新整理</button>
+      </div>
+    </div>
+    <div id="adminGrid" class="space-y-4"></div>
+  </div>
+
+</div>
+
+  <!-- ============ 送出成功：灑花感謝 ============ -->
+  <div id="thanksOverlay" style="position:fixed;inset:0;z-index:50;display:none;align-items:center;justify-content:center;background:rgba(2,6,23,.78);backdrop-filter:blur(2px)">
+    <canvas id="confetti" style="position:fixed;inset:0;pointer-events:none"></canvas>
+    <div class="glass-card rounded-2xl p-8 text-center mx-4" style="position:relative;max-width:22rem">
+      <div style="font-size:46px" class="mb-1">🎉</div>
+      <h3 class="text-2xl font-extrabold text-white mb-3">感謝您的填報！</h3>
+      <p class="text-slate-300 text-sm leading-relaxed mb-5">系統已通知教學研究組，並將填報完成確認信寄到您的信箱，敬請留存備查。</p>
+      <button id="thanksClose" class="w-full bg-gradient-to-r from-sky-600 to-blue-700 text-white font-bold py-3 rounded-xl hover:from-sky-500 transition">好 的</button>
+    </div>
+  </div>
+
+<script>
+/* ================= 設定（TODO 部署後填 / 可改） ================= */
+const CONFIG = {
+  GAS_URL:      "https://script.google.com/macros/s/AKfycbxsenshI8pcVGJa9EwgP-EHkhFGKQji8AxqU9WrEOykJQyytpZG8ag_HHfiaQXrnBQVbw/exec",                 // ← 你的 Apps Script /exec 網址（已填入）
+  DEADLINE_STR: "2026/08/09 00:00:00 GMT+0800",// 截止＝8/7 當日 24:00（8/8 00:00 關閉）
+  ADMIN_TOKEN:  "cchm-edu-2026",               // 承辦人後台通行碼（與後端一致）；開 ?admin=此碼 進後台
+  REPORT_TITLE: "115年度醫院評鑑及教學醫院評鑑不定時及即時追蹤輔導訪查",  // ★請確認年度字樣
+};
+const ITEMS = [{"id": "r5", "tiao": "1.1.2", "section": "建議事項", "opinion": "建議貴院宜增設牙科專屬會議室及教學空間。", "due": "116/5", "roles": [{"role": "牙醫師", "prefill": "於院方會議提出增設牙科專屬會議室及教學空間需求，並配合院方未來空間規劃辦理。"}]}, {"id": "r6", "tiao": "1.1.3", "section": "建議事項", "opinion": "建議貴院內科住院醫師及其他職類之學習歷程，宜有統一之電子學習登錄糸統。", "due": "116/5", "roles": [{"role": "醫師", "prefill": "1.醫師：已開始著手建置內科住院醫師電子學習歷程供內科住院醫師使用。"}, {"role": "牙醫師", "prefill": "2.牙醫師：已建置電子學習歷程供訓練醫師使用。"}, {"role": "藥師", "prefill": "3.藥事：已開始逐步架構E-Portfolio電子學習歷程：如測驗表單及課程架構，UGY部分已完成建置供學員使用，PGY部分已逐步建置，預定114年12月完成。"}, {"role": "醫事放射", "prefill": "4.醫事放射：已於112年教學評鑑前建置完整電子學習歷程供PGY學員訓練使用。"}, {"role": "醫事檢驗", "prefill": "5.醫事檢驗：E-Portfolio系統學習，於114年1月9日派二名醫檢師至永康臨床病理部及114年5月13日三名參與教研組舉辦「E-Portfolio學習歷程建置及使用心得分享」，現陸續將學員表單、考核等相關資料存放系統內。"}, {"role": "護理", "prefill": "6.護理：已於112年1月使用電子學習歷程供PGY學員訓練使用。"}, {"role": "營養", "prefill": "7. 營養：(1)113年起建置E-Portfolio電子學習歷程架構，並適時與教學討論會議做滾動式調整。\n    (2)113年07月01日至09月16日及114年6月24日至9月5日，收訓長榮大學與中國醫藥大學暑期實習生各1名，其學習歷程採本院E-Protfolio系統建置並與實習生計畫書及學習評量紀錄手冊同步執行作業。"}, {"role": "呼吸治療", "prefill": "8.呼吸治療：113年新進人員已開始使用電子學習歷程進行學習、測試及回饋。"}, {"role": "物理治療", "prefill": "9.物理治療：已著手建置學員電子學習歷程：如電子化教學檔案與成效評核，114年起PGY學員陸續使用中。"}, {"role": "職能治療", "prefill": "10.職能治療：已著手建置學員電子學習歷程：如電子化教學檔案與成效評核。"}, {"role": "語言治療", "prefill": "11.語言治療：將逐步規劃建置學員電子學習歷程。"}]}, {"id": "r7", "tiao": "1.3.1", "section": "建議事項", "opinion": "1.貴院宜擴增營養職類之使用空間，以兼顧學習便利性。\n2.貴院呼吸治療職類若日後收訓學生，宜提供獨立之學生使用空間。", "due": "116/5", "roles": [{"role": "營養", "prefill": "1.營養：於院方會議提出擴增營養教學使用空間需求，並配合院方未來規劃辦理。"}, {"role": "呼吸治療", "prefill": "2.呼吸治療：逐步規劃收訓學生之空間需求，並配合院方規劃辦理。"}]}, {"id": "r8", "tiao": "1.3.6", "section": "建議事項", "opinion": "貴院宜提供模擬訓練教室，供全院醫療人員使用，以增加學習便利性。", "due": "116/5", "roles": [{"role": "教學研究組", "prefill": "1.本院目前有提供模擬訓練教室供全院醫療人員使用，惟與會議室為共用空間。\n2.未來將配合院方發展空間規劃，提供更合適與獨立之模擬訓練教室供人員訓練使用。"}]}, {"id": "r10", "tiao": "4.2.1", "section": "建議事項", "opinion": "建議貴院針對醫事放射或其他職類宜由醫師協助，就職類之臨床資料進行蒐集，進一步執行研究計畫與期刊發表。", "due": "116/5", "roles": [{"role": "醫事放射", "prefill": "1.醫事放射：將與神經外科醫師合作關於脊椎研究計畫。"}, {"role": "藥師", "prefill": "2.藥師：已與胸腔科醫師合作完成以「吸入型類固醇對COPD患者造成骨質疏鬆之可能」為主題之研究，114年已完成發表。"}, {"role": "醫事檢驗", "prefill": "3.醫事檢驗：現今檢驗科編制無醫師在單位內，規劃與相關疾病的檢驗結果統計並提出計畫方案與可行性。盡可能滿足跨單位共同照護之研究方向，依計畫執行成效追蹤。目前檢驗科配合感染管制組計畫，提供每月血液培養污染率報表。"}, {"role": "護理", "prefill": "4.護理：護理職類持續研究計畫及期刊發表，持續追蹤中。"}, {"role": "營養", "prefill": "5.營養：本科擬培訓臨床教師學術研究計畫之申請資格，預計115年與醫師、醫事相關單位合作，共同提出院內全人研究計畫。"}, {"role": "呼吸治療", "prefill": "6.呼吸治療：單位持續有申請與醫師合作之院內全人或專題研究計畫，並有海報論文及期刊之發表。"}, {"role": "物理治療", "prefill": "7.物理治療：(1) 113年度物理治療已有與醫師合作之專題研究1案及全人研究1案並執行中。(2)期刊發表一篇(第一作者)，醫療品質雜誌 2023,12 ( 第十二卷 , 第一期 )，題目：提升急性後期照護居家模式之收案率。\n    113年起與復健科醫師合作研究專案，主題：「神經電刺激應用於腦中風病人吞嚥及運動功能之成效」，後續研究進行中。"}, {"role": "職能治療", "prefill": "8.職能治療：114年度職能治療已有與醫師合作之研究案1件。共同蒐集臨床資料，進一步執行研究計畫與發表。"}, {"role": "語言治療", "prefill": "9.語言治療：已與醫師共同合作1篇研究，並於台灣復健醫學會114年度會員大會暨聯合學術研討會發表。"}]}, {"id": "r16", "tiao": "6.1.4", "section": "建議事項", "opinion": "1.建議貴院之評量資料宜進一步使用數據化分析並以PDCA方式進行改善。\n2.建議貴院針對學習不佳之學員或教學不佳者，宜有共同單位（如：醫教會等）協助處理。", "due": "115/2", "roles": [{"role": "醫事檢驗", "prefill": "1.113年度未有醫技學生來院實習，今年度將有一名二技學生至本院實習，規劃訓練實習時程，並安排實習導師於學員在院期間的學習及生活狀況追蹤輔導，訂有期中及期末座談會評核學員學習成效，缺失則以PDCA進行補強改善機制。\n依委員建議，評量資料使用數據化分析並以PDCA方式進行改善。(1)檢驗科制訂「醫技系學生訓練作業程序」(CCH.LAB.QP-1602)，明訂實習學生評量方法。(2)以學生為中心之教學策略，依據評核結果進行成果檢視，不符合規範即進行調整改善，並有表單文件紀錄。\n2.針對學習不佳學員及教學不佳教師，需填寫「佳里奇美醫院檢驗科補強訓練輔導機制紀錄表」(QR160206)，單位主管進行學習不佳之學員或教師面談了解教學不佳之原因與分析，結果再呈報教學中心協助處理。"}]}, {"id": "r17", "tiao": "6.2.1", "section": "建議事項", "opinion": "1.建議貴院針對臨床單位宜培訓種子教師，以更符合需求。\n2.建議貴院宜將全人教育應用於臨床作業。", "due": "115/2", "roles": [{"role": "醫事檢驗", "prefill": "1.檢驗科將專業課程派任醫檢師參加訓練於114年7月1日~2日由二名醫檢師參加疾管署辦理「114年度人體寄生蟲鏡檢」研習會，並通過考核。回院將在科會議分享並擔任種子教師。\n2.定期規劃全人教育課程，如服務禮儀等納入訓練課程中，以利人員實際應用於臨床作業中。"}]}, {"id": "r18", "tiao": "6.2.4", "section": "建議事項", "opinion": "貴院之評量資料宜進一步使用數據化分析，並以PDCA方式進行改善。", "due": "114/12", "roles": [{"role": "醫事檢驗", "prefill": "1.檢驗科以學習者為中心分別編排學習訓練課程，醫檢師亦由外部能力試驗評估能力，未達合格或缺失則導入不符合事項改善，以PDCA進行缺失改善，於114年醫檢學會第一次體液尿液沉渣測試，正確率93.75%(14/16)有二題不合格，則導入編號11412不符合事項矯正改善。"}]}, {"id": "r21", "tiao": "6.2.3", "section": "建議事項", "opinion": "建議貴院宜採用目前台灣營養學會已有之「可信賴的專業活動」項目及評估方式，較能客觀評估個別學員及修正學習方式，以提升其學習成果。", "due": "114/10", "roles": [{"role": "營養", "prefill": "已於113年08月07日三院區營養科會議討論並決議事項:\n    1.將運用營養師公會全聯會共同擬訂112年08月01日公告內容，為「2022年台灣新進營養師可信賴專業活動(EPAs)」第一版，各專業領域進行信賴區間等級評核，三院區評分標準需有明確一致性，評核方法及評核標準參考台灣膳食雜誌期刊及醫療品質雜誌17卷3期(2023/05)Pp.50-58，建置台灣教學醫院新進營養師可信賴專業活動。\n    2.三院區營養科共同成立臨床能力委員會(CCC)-(1)固定參與成員，安排執行教師或營養師共同參與，以增加相關議題客觀性及執行性。(2)未來考量參與者時間，除實體會議，搭配線上會議增加執行彈性。\n1141114年執行內容：\n1.「PGY教學計劃書」修訂版:將運用營養師公會全聯會共同擬訂113年12月31日公告內容，為「2024年台灣新進營養師可信賴專業活動(EPAs)」第二版為依據修訂之。"}]}, {"id": "r22", "tiao": "6.2.4", "section": "建議事項", "opinion": "建議貴院宜進一步分析教學活動之成效，如：使用PDCA之架構。", "due": "114/10", "roles": [{"role": "營養", "prefill": "採用EPAs評估方式進行教學活動成效分析：\n1. 111年04月李姿穎營養師到職，已於112年05月至永康總院聯合訓練，其課程為各式 ICU重症住院病患營養醫療照護(篩檢、評估、計畫與執行)，受訓期間為4天上午時段，評核方式採EPAs並通過考核，於112年07月考取加護病房營養師認證。\n2. 李姿穎營養師於113年12月接受三院區「營養師專業能力進階認定管理程序書」D2進階考核制度，並於114年元月份起生效。"}]}, {"id": "r25", "tiao": "綜合意見1", "section": "綜合意見", "opinion": "建議貴院藥事、醫事放射及醫事檢驗等職類之新進人員學習歷程，宜逐步電子化。", "due": "114/12", "roles": [{"role": "藥師", "prefill": "已開始逐步架構E-Portfolio電子學習歷程：如測驗表單及課程架構，UGY部分已完成建置供學員使用，PGY部分已逐步建置，預定114年12月完成。"}, {"role": "醫事放射", "prefill": "已於112年教學評鑑前建置完整E-Portfolio電子學習歷程，並提供PGY學員使用中。"}, {"role": "醫事檢驗", "prefill": "E-Portfolio系統學習，於114年1月9日派二名醫檢師至永康臨床病理部及114年5月13日三名參與教研組舉辦「E-Portfolio學習歷程建置及使用心得分享」，現陸續將學員表單、考核等相關資料存放系統內。"}]}, {"id": "r27", "tiao": "綜合意見3", "section": "綜合意見", "opinion": "建議貴院物理治療、職能治療等職類之教學、研究及臨床治療宜持續提供優質全人醫療照護服務與臨床空間，吸引實習學生與優秀新進人員來院學習訓練。", "due": "116/5", "roles": [{"role": "物理治療", "prefill": "1. 物理治療：物理治療持續參與跨領域團隊全人照護，鼓勵教師接受訓練，精進本質學能。112年10月至113年9月派訓院外教育訓練合計23人次。113年9月物理治療PGY開訓1人。114年物理治療PGY開訓2人。"}, {"role": "職能治療", "prefill": "2.職能治療：職能治療提供優質全人醫療照護服務與臨床空間：(1)今年完成採購生物回饋電刺激，運用於臨床病人治療。(2)擬規劃新空間，增加復健科新空間，強化PAC及兒聯評業務特色。(3)共2位參加114年全人照護教育師培工作訪訓練。"}, {"role": "語言治療", "prefill": "3.語言治療：持續與跨領域團隊合作，提供優質全人醫療照護服務。例如：PAC照護、小兒發展聯合評估等，並爭取更合宜臨床訓練設施與教學空間。"}]}];
+const ROLE_ORDER = ["醫師", "牙醫師", "藥師", "醫事放射", "醫事檢驗", "護理", "營養", "呼吸治療", "物理治療", "職能治療", "語言治療", "教學研究組"];
+
+/* ================= 共用 ================= */
+const $ = s => document.querySelector(s);
+document.getElementById('deadlineTxt').innerText = "民國115年8月8日";
+function jsonp(extra){
+  return new Promise((res,rej)=>{
+    const cb='gas_'+Date.now()+'_'+Math.floor(Math.random()*1e4);
+    let tm=null; const s=document.createElement('script');
+    function clean(){ if(tm)clearTimeout(tm); delete window[cb]; if(s.parentNode)s.parentNode.removeChild(s); }
+    window[cb]=d=>{clean();res(d);};
+    s.src=CONFIG.GAS_URL+'?callback='+cb+(extra?('&'+extra):'');
+    s.onerror=()=>{clean();rej(new Error('連線失敗'));};
+    document.body.appendChild(s);
+    tm=setTimeout(()=>{clean();rej(new Error('連線逾時'));},12000);
+  });
+}
+function isClosed(){ return new Date() >= new Date(CONFIG.DEADLINE_STR); }
+function esc(t){ return (t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+/* ================= 填報畫面 ================= */
+const roleSel=$('#roleSel');
+ROLE_ORDER.forEach(r=>{
+  // 只列出實際有條號的職類
+  if(ITEMS.some(it=>it.roles.some(x=>x.role===r))){
+    const o=document.createElement('option'); o.value=r; o.textContent=r; roleSel.appendChild(o);
+  }
+});
+$('#pageTitle') && ($('#pageTitle').innerText = CONFIG.REPORT_TITLE.replace(/^\d+年度/,'') || $('#pageTitle').innerText);
+
+let currentRole="";
+roleSel.addEventListener('change', async ()=>{
+  currentRole=roleSel.value;
+  if(!currentRole){ $('#cards').innerHTML=''; $('#hintPick').classList.remove('hidden'); $('#actionBar').classList.add('hidden'); return; }
+  $('#hintPick').classList.add('hidden');
+  $('#cards').innerHTML='<div class="text-center text-slate-500 py-6"><i class="fa-solid fa-spinner fa-spin mr-2"></i>載入您的條號中…</div>';
+  let saved={};
+  try{ const r=await jsonp('action=load&role='+encodeURIComponent(currentRole)); if(r&&r.result==='load'){ (r.rows||[]).forEach(row=>saved[row.itemId]=row); if(r.filler)$('#filler').value=r.filler; if(r.ext)$('#ext').value=r.ext; if(r.email)$('#email').value=r.email; } }catch(e){}
+  renderCards(currentRole, saved);
+});
+
+function myItems(role){ return ITEMS.filter(it=>it.roles.some(x=>x.role===role)); }
+function myPrefill(it,role){ const seg=it.roles.find(x=>x.role===role); return seg?seg.prefill:''; }
+
+function renderCards(role, saved){
+  const list=myItems(role);
+  const closed=isClosed();
+  $('#cards').innerHTML = list.map(it=>{
+    const s = saved[it.id] || {};
+    const content = (s.content!=null && s.content!=='') ? s.content : myPrefill(it,role);
+    const status  = s.status || '執行中';
+    const due     = (s.due!=null && s.due!=='') ? s.due : it.due;
+    const secBadge = it.section==='綜合意見'
+      ? '<span class="badge bg-purple-500/20 text-purple-300">綜合意見</span>'
+      : '<span class="badge bg-sky-500/20 text-sky-300">建議事項</span>';
+    const filledMark = saved[it.id] ? '<span class="badge bg-emerald-500/20 text-emerald-300"><i class="fa-solid fa-check"></i>已填報</span>' : '';
+    const fromSaved = !!saved[it.id];
+    const sourceHint = fromSaved ? '已帶入您本輪填報內容，可再修改' : '已帶入上次（前一輪）填報內容，請更新';
+    return `
+    <div class="glass-card rounded-2xl p-5 sm:p-6" data-id="${it.id}">
+      <div class="flex flex-wrap items-center gap-2 mb-3">
+        <span class="badge bg-white/10 text-white text-base">條號 ${esc(it.tiao)}</span>
+        ${secBadge} ${filledMark}
+      </div>
+      <div class="mb-4">
+        <div class="text-xs text-slate-400 mb-1">委員評量意見</div>
+        <div class="text-slate-200 text-sm bg-slate-900/40 rounded-lg p-3 leading-relaxed">${esc(it.opinion)}</div>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+        <div>
+          <label class="block text-xs text-slate-400 mb-1">執行狀況</label>
+          <select class="fld f-status">
+            <option ${status==='已完成'?'selected':''}>已完成</option>
+            <option ${status==='執行中'?'selected':''}>執行中</option>
+            <option ${status==='未執行'?'selected':''}>未執行</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs text-slate-400 mb-1">預定完成年月 <span class="text-slate-500 f-due-note">(已完成免填)</span></label>
+          <div class="flex gap-2 items-center flex-wrap">
+            <input class="fld f-due" value="${esc(due)}" placeholder="例：116/5" style="max-width:8rem">
+            <input type="month" class="fld f-due-pick" style="max-width:11rem;color-scheme:dark" title="點日曆選年月，會自動換算為民國年/月">
+          </div>
+          <p class="text-[11px] text-slate-500 mt-1"><i class="fa-regular fa-calendar-days mr-1"></i>可直接打字，或按右側日曆選擇（西元→自動換民國）</p>
+        </div>
+      </div>
+      <div>
+        <div class="flex flex-wrap items-center gap-2 mb-1">
+          <label class="text-xs text-slate-400">目前執行情形（或尚未執行理由）</label>
+          <span class="badge bg-sky-500/15 text-sky-300" style="font-size:11px"><i class="fa-solid fa-clock-rotate-left"></i>${sourceHint}</span>
+        </div>
+        <textarea class="fld f-content">${esc(content)}</textarea>
+      </div>
+    </div>`;
+  }).join('');
+  $('#actionBar').classList.toggle('hidden', list.length===0);
+  if(closed){ $('#submitBtn').disabled=true; $('#submitBtn').innerHTML='<i class="fa-solid fa-lock mr-2"></i>填報已截止'; }
+  initCardStates();
+}
+
+/* ---- 預定完成年月：民國↔西元 換算、日曆同步、已完成免填 ---- */
+function rocToMonthInput(roc){
+  const m=(roc||'').toString().match(/^\s*(\d{2,3})\s*[\/\-\.]\s*(\d{1,2})\s*$/);
+  if(!m) return '';
+  const y=parseInt(m[1],10)+1911, mo=('0'+parseInt(m[2],10)).slice(-2);
+  return y+'-'+mo;
+}
+function monthInputToRoc(val){
+  const m=(val||'').match(/^(\d{4})-(\d{2})$/); if(!m) return '';
+  return (parseInt(m[1],10)-1911)+'/'+parseInt(m[2],10);
+}
+function applyDoneState(card){
+  const done = card.querySelector('.f-status').value==='已完成';
+  const due=card.querySelector('.f-due'), pick=card.querySelector('.f-due-pick'), note=card.querySelector('.f-due-note');
+  due.disabled=done; pick.disabled=done;
+  due.classList.toggle('opacity-40',done); pick.classList.toggle('opacity-40',done);
+  note.textContent = done ? '(已完成免填)' : '';
+  note.classList.toggle('text-emerald-400',done);
+}
+function initCardStates(){
+  document.querySelectorAll('#cards [data-id]').forEach(card=>{
+    const pick=card.querySelector('.f-due-pick'), due=card.querySelector('.f-due');
+    if(pick&&due) pick.value=rocToMonthInput(due.value);
+    applyDoneState(card);
+  });
+}
+/* 事件委派（#cards 常駐，掛一次即可） */
+$('#cards').addEventListener('change', e=>{
+  const card=e.target.closest('[data-id]'); if(!card) return;
+  if(e.target.classList.contains('f-due-pick')){ const roc=monthInputToRoc(e.target.value); if(roc) card.querySelector('.f-due').value=roc; }
+  if(e.target.classList.contains('f-status')) applyDoneState(card);
+});
+$('#cards').addEventListener('input', e=>{
+  if(e.target.classList.contains('f-due')){ const card=e.target.closest('[data-id]'); const pick=card.querySelector('.f-due-pick'); const mi=rocToMonthInput(e.target.value); if(mi&&pick) pick.value=mi; }
+});
+
+function collectPayload(){
+  const items=[];
+  document.querySelectorAll('#cards [data-id]').forEach(card=>{
+    const id=card.getAttribute('data-id');
+    const it=ITEMS.find(x=>x.id===id);
+    const st=card.querySelector('.f-status').value;
+    let dueV=card.querySelector('.f-due').value.trim();
+    if(st==='已完成') dueV='';   // 已完成免填
+    items.push({
+      itemId:id, tiao:it.tiao, section:it.section, opinion:it.opinion,
+      status:st, due:dueV,
+      content:card.querySelector('.f-content').value.trim()
+    });
+  });
+  return {
+    action:'submit', role:currentRole,
+    filler:$('#filler').value.trim(), ext:$('#ext').value.trim(), email:$('#email').value.trim(),
+    items
+  };
+}
+
+$('#submitBtn').addEventListener('click', async ()=>{
+  if(isClosed()){ alert('填報已截止。'); return; }
+  if(!currentRole){ alert('請先選擇職類。'); return; }
+  if(!$('#filler').value.trim()){ alert('請填寫填表人姓名。'); $('#filler').focus(); return; }
+  const payload=collectPayload();
+  if(payload.items.length===0){ alert('沒有可送出的條號。'); return; }
+  const btn=$('#submitBtn'); btn.disabled=true; btn.innerHTML='<i class="fa-solid fa-spinner fa-spin mr-2"></i>資料傳送中…';
+  try{
+    await fetch(CONFIG.GAS_URL,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},
+      body:new URLSearchParams({payload:JSON.stringify(payload)})});
+  }catch(e){}
+  // 不論 POST 是否讀得到回應，一律用 JSONP 查證是否真的寫入
+  try{
+    const chk=await jsonp('action=load&role='+encodeURIComponent(currentRole));
+    const savedIds=(chk&&chk.rows||[]).map(r=>r.itemId);
+    const ok=payload.items.every(i=>savedIds.includes(i.itemId));
+    if(ok){ showThanks(); }
+    else { alert('⚠️ 似乎尚未完全寫入，請再按一次「送出更新」，或稍後用同職類重新進入確認。'); }
+  }catch(e){ alert('送出後暫時無法確認結果，請稍後重新以同職類進入本頁查看是否已帶出您的內容。'); }
+  finally{ btn.disabled=isClosed(); btn.innerHTML=isClosed()?'<i class="fa-solid fa-lock mr-2"></i>填報已截止':'<i class="fa-solid fa-paper-plane mr-2"></i>送 出 更 新'; }
+});
+
+/* ============ 產生 Word（.doc） ============ */
+function wordWrap(inner){
+  return '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">'
+    +'<head><meta charset="utf-8"><style>'
+    +'@page{size:A4 landscape;margin:1.5cm;} body{font-family:"標楷體","DFKai-SB","Microsoft JhengHei",serif;font-size:11pt;}'
+    +'table{border-collapse:collapse;width:100%;} th,td{border:1px solid #000;padding:5px 7px;vertical-align:top;} '
+    +'th{background:#e8eef7;text-align:center;} .ctr{text-align:center;} h2,h3{text-align:center;margin:6px 0;}'
+    +'</style></head><body>'+inner+'</body></html>';
+}
+function statusMark(st,which){ return st===which?'V':''; }
+function rowHTML(tiao,opinion,status,due,content){
+  return '<tr>'
+    +'<td class="ctr">'+esc(tiao)+'</td>'
+    +'<td>'+esc(opinion).replace(/\n/g,'<br>')+'</td>'
+    +'<td></td>'
+    +'<td class="ctr">'+statusMark(status,'已完成')+'</td>'
+    +'<td class="ctr">'+statusMark(status,'執行中')+'</td>'
+    +'<td class="ctr">'+statusMark(status,'未執行')+'</td>'
+    +'<td class="ctr">'+(status==='已完成'?'':esc(due))+'</td>'
+    +'<td>'+esc(content).replace(/\n/g,'<br>')+'</td>'
+    +'</tr>';
+}
+function tableHead(){
+  return '<h2>'+esc(CONFIG.REPORT_TITLE)+'</h2><h3>醫院改善事項執行成果一覽表</h3><h3 style="text-align:left">二、教學醫院評鑑部分</h3>'
+    +'<table><thead><tr>'
+    +'<th rowspan="2">條號</th><th rowspan="2">委員評量意見</th><th rowspan="2">委員訪查<br>意見回饋</th>'
+    +'<th colspan="3">執行狀況</th><th rowspan="2">預定完成年月<br>(已完成免填)</th><th rowspan="2">目前執行情形<br>(或尚未執行理由)</th></tr>'
+    +'<tr><th>已完成</th><th>執行中</th><th>未執行</th></tr></thead><tbody>';
+}
+function downloadDoc(filename, innerRows){
+  const html=wordWrap(tableHead()+innerRows+'</tbody></table>');
+  const blob=new Blob(['\ufeff'+html],{type:'application/msword'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=filename; a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1500);
+}
+
+$('#wordBtn').addEventListener('click', ()=>{
+  if(!currentRole){ alert('請先選擇職類。'); return; }
+  const p=collectPayload();
+  const rows=p.items.map(i=>rowHTML(i.tiao,i.opinion,i.status,i.due,i.content)).join('');
+  downloadDoc('教學評鑑改善進度_'+currentRole+'.doc', rows);
+});
+
+/* ================= 承辦人彙整後台 ================= */
+async function initAdmin(token){
+  $('#fillView').classList.add('hidden'); $('#adminView').classList.remove('hidden');
+  $('#adminSub').innerText='載入中…';
+  let rows=[];
+  try{ const r=await jsonp('action=list&token='+encodeURIComponent(token)); if(r&&r.result==='list'){ rows=r.rows||[]; } else { $('#adminSub').innerText='通行碼錯誤或無資料。'; return; } }
+  catch(e){ $('#adminSub').innerText='連線失敗。'; return; }
+  renderAdmin(rows);
+}
+function submittedRoles(){ const s=new Set(); ITEMS.forEach(it=>it.roles.forEach(x=>s.add(x.role))); return [...s]; }
+function renderAdmin(rows){
+  const key=(role,id)=>role+'||'+id;
+  const filled=new Set(rows.map(r=>key(r.role,r.itemId)));
+  const cnt={}; rows.forEach(r=>{ const k=key(r.role,r.itemId); cnt[k]=(cnt[k]||0)+1; });
+  const allRoles = ROLE_ORDER.filter(r=>ITEMS.some(it=>it.roles.some(x=>x.role===r)));
+  // 需填總格數
+  let need=0; ITEMS.forEach(it=>need+=it.roles.length);
+  const got = filled.size;
+  $('#adminSub').innerText='截止：民國115年8月8日　·　共 '+ITEMS.length+' 條號、'+need+' 個職類格　·　綠格右上「×N」＝該格修改送出次數（歷程留存）';
+  $('#adminStats').innerHTML =
+    stat('應填格數',need,'text-white')+stat('已填格數',got,'text-emerald-400')+
+    stat('未填格數',need-got,'text-rose-400')+stat('完成率',(need?Math.round(got/need*100):0)+'%','text-sky-400');
+  // 各職類進度
+  const nag=[];
+  const roleBlocks=allRoles.map(role=>{
+    const its=ITEMS.filter(it=>it.roles.some(x=>x.role===role));
+    const done=its.filter(it=>filled.has(key(role,it.id)));
+    const miss=its.filter(it=>!filled.has(key(role,it.id)));
+    if(miss.length) nag.push(role+'：尚缺 '+miss.map(m=>m.tiao).join('、'));
+    const pills=its.map(it=>{
+      const kk=key(role,it.id); const ok=filled.has(kk); const c=cnt[kk]||0;
+      const ex=(ok&&c>1)?'<sup style="font-size:9px;margin-left:1px">×'+c+'</sup>':'';
+      return '<span class="badge '+(ok?'bg-emerald-500/20 text-emerald-300':'bg-rose-500/15 text-rose-300')+'">'+(ok?'<i class="fa-solid fa-check"></i>':'<i class="fa-solid fa-xmark"></i>')+esc(it.tiao)+ex+'</span>';
+    }).join(' ');
+    return '<div class="glass-card rounded-xl p-4"><div class="flex items-center justify-between mb-2"><b class="text-white">'+esc(role)+'</b>'
+      +'<span class="text-sm '+(miss.length?'text-rose-400':'text-emerald-400')+'">'+done.length+'/'+its.length+'</span></div>'
+      +'<div class="flex flex-wrap gap-1.5">'+pills+'</div></div>';
+  }).join('');
+  $('#adminGrid').innerHTML=roleBlocks;
+  window.__NAG=nag.join('\n'); window.__ROWS=rows;
+}
+function stat(label,val,cls){ return '<div class="glass-card rounded-xl p-4 text-center"><div class="text-slate-400 text-xs mb-1">'+label+'</div><div class="text-2xl font-black '+cls+'">'+val+'</div></div>'; }
+
+$('#copyNagBtn').addEventListener('click',()=>{ const t=window.__NAG||''; if(!t){alert('目前全部填齊，無待催名單 🎉');return;} navigator.clipboard.writeText(t).then(()=>alert('已複製待催填名單：\n\n'+t)).catch(()=>prompt('請手動複製：',t)); });
+$('#refreshBtn').addEventListener('click',()=>initAdmin(new URLSearchParams(location.search).get('admin')));
+
+/* 彙整 Word：同條號多職類自動編號分列，比照原格式 */
+$('#aggBtn').addEventListener('click',()=>{
+  const rows=window.__ROWS||[];
+  const map={}; rows.forEach(r=>{ map[r.role+'||'+r.itemId]=r; });
+  const inner=ITEMS.map(it=>{
+    let status=it.section, due=it.due; // 預設
+    let content;
+    if(it.roles.length===1){
+      const r=map[it.roles[0].role+'||'+it.id];
+      status=r?r.status:'執行中'; due=r?r.due:it.due;
+      content=r&&r.content?r.content:it.roles[0].prefill;
+    } else {
+      // 多職類：依 ROLE_ORDER 編號
+      const ordered=ROLE_ORDER.filter(role=>it.roles.some(x=>x.role===role));
+      const parts=ordered.map((role,idx)=>{
+        const r=map[role+'||'+it.id];
+        const seg=it.roles.find(x=>x.role===role);
+        const txt=(r&&r.content)?r.content:(seg?seg.prefill:'');
+        // 去掉原本開頭的「N.職類：」避免重複，統一重新編號
+        const cleaned=txt.replace(/^\s*\d+\s*[\.、]\s*[\u4e00-\u9fff、]{2,12}?\s*[：:]\s*/,'');
+        return (idx+1)+'.'+role+'：'+cleaned;
+      });
+      content=parts.join('\n');
+      // 狀況：多職類時保留「執行中」（與原表一致，逐職類細節寫在內文）
+      const anyDone = ordered.every(role=>{ const r=map[role+'||'+it.id]; return r&&r.status==='已完成'; });
+      status = anyDone?'已完成':'執行中';
+    }
+    return rowHTML(it.tiao, it.opinion, status, due, content);
+  }).join('');
+  downloadDoc('教學評鑑改善進度_彙整一覽表.doc', inner);
+});
+
+/* ================= 送出成功：灑花感謝 ================= */
+function runConfetti(){
+  const c=document.getElementById('confetti'); if(!c) return;
+  const ctx=c.getContext('2d'); c.width=window.innerWidth; c.height=window.innerHeight;
+  const colors=['#38bdf8','#22d3ee','#a78bfa','#f472b6','#34d399','#fbbf24','#fb7185'];
+  const parts=[];
+  for(let i=0;i<150;i++) parts.push({
+    x:Math.random()*c.width, y:-20-Math.random()*c.height*0.4,
+    w:6+Math.random()*7, h:8+Math.random()*9, vy:2+Math.random()*3.2, vx:-1.6+Math.random()*3.2,
+    rot:Math.random()*6.28, vr:-0.2+Math.random()*0.4, col:colors[i%colors.length]
+  });
+  const t0=performance.now();
+  (function frame(now){
+    const el=now-t0; ctx.clearRect(0,0,c.width,c.height);
+    parts.forEach(p=>{ p.x+=p.vx; p.y+=p.vy; p.rot+=p.vr;
+      ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot);
+      ctx.fillStyle=p.col; ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h); ctx.restore(); });
+    if(el<3000) requestAnimationFrame(frame); else ctx.clearRect(0,0,c.width,c.height);
+  })(t0);
+}
+function showThanks(){ document.getElementById('thanksOverlay').style.display='flex'; runConfetti(); }
+document.getElementById('thanksClose').addEventListener('click', ()=>document.getElementById('thanksOverlay').style.display='none');
+
+/* ================= 進入點 ================= */
+(function(){
+  const admin=new URLSearchParams(location.search).get('admin');
+  if(admin){ if(admin===CONFIG.ADMIN_TOKEN){ initAdmin(admin);} else { $('#adminView').classList.remove('hidden'); $('#fillView').classList.add('hidden'); $('#adminSub').innerText='通行碼錯誤。'; } }
+})();
+</script>
+</body>
+</html>
