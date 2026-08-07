@@ -1,649 +1,447 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>115年度 培訓計畫執行調查 · 評鑑量性指標達標儀表板</title>
+<title>教學醫院評鑑改善進度 線上填報｜佳里奇美醫院</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-  :root{
-    --ink:#141a26; --ink2:#3d4657; --muted:#6b7688; --line:#e2e6ed;
-    --bg:#eef1f5; --card:#ffffff; --accent:#2b6cb0; --accent-soft:#eaf1fa;
-    --vs:#1f9d61; --s:#83c98d; --ok:#f3c14b; --ns:#ec8a56; --vns:#d9534f;
-    --pass:#1f9d61; --passbg:#e7f6ee; --fail:#d9534f; --failbg:#fcecec;
-    --shadow:0 1px 3px rgba(20,26,38,.07),0 6px 18px rgba(20,26,38,.05);
-  }
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:"Microsoft JhengHei","PingFang TC","Noto Sans TC",system-ui,sans-serif;
-    background:var(--bg);color:var(--ink);line-height:1.55;-webkit-font-smoothing:antialiased;
-    padding:24px 16px 60px;}
-  .wrap{max-width:1160px;margin:0 auto;}
-  h1{font-size:1.6rem;font-weight:800;letter-spacing:.5px;}
-  .sub{color:var(--muted);font-size:.92rem;margin-top:4px;}
-  .trial-tag{display:inline-block;vertical-align:middle;font-size:.72rem;font-weight:800;color:#8a6d00;
-    background:#fff3cf;border:1px solid #f0e3b0;border-radius:999px;padding:2px 12px;margin-left:8px;letter-spacing:1px;}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);}
-  section{margin-top:22px;}
-  .sec-title{font-size:1.12rem;font-weight:800;display:flex;align-items:center;gap:9px;margin-bottom:12px;}
-  .sec-title .bar{width:5px;height:20px;background:var(--accent);border-radius:3px;}
-  .note{font-size:.86rem;color:var(--ink2);background:var(--accent-soft);border:1px solid #d6e4f5;
-    border-radius:10px;padding:10px 14px;margin-bottom:16px;}
-  .note b{color:var(--accent);}
-
-  /* per-indicator conclusion bar */
-  .concl{border:1px solid var(--line);border-radius:16px;padding:14px 18px;margin-bottom:16px;background:#fbfcfe;}
-  .concl-row{display:flex;flex-wrap:wrap;gap:12px;}
-  .concl-item{flex:1 1 300px;display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;border:1px solid;}
-  .concl-item.ok{background:var(--passbg);border-color:#bfe6cf;}
-  .concl-item.warn{background:#fffdf2;border-color:#f0e3b0;}
-  .concl-item .ico{font-size:1.4rem;font-weight:800;}
-  .concl-item.ok .ico{color:var(--pass);}
-  .concl-item.warn .ico{color:#b58900;}
-  .concl-item .code{font-size:.82rem;font-weight:800;color:var(--muted);}
-  .concl-item .stat{font-size:1rem;font-weight:800;}
-  .concl-item.ok .stat{color:var(--pass);}
-  .concl-item.warn .stat{color:var(--warn,#8a6d00);}
-  .concl-item .sc{margin-left:auto;font-size:1.5rem;font-weight:800;white-space:nowrap;}
-  .concl-item.ok .sc{color:var(--pass);}
-  .concl-item.warn .sc{color:#b58900;}
-  .concl-item .sc small{font-size:.72rem;color:var(--muted);font-weight:700;display:block;text-align:right;}
-  .concl-note{font-size:.8rem;color:var(--muted);margin-top:10px;}
-  /* attention card */
-  .attention{padding:15px 18px;margin-bottom:18px;border:1px solid #f0d9a8;background:#fffaf0;border-radius:14px;}
-  .attention h4{font-size:.98rem;font-weight:800;color:#9a6b00;margin-bottom:9px;}
-  .att-row{display:flex;align-items:center;gap:10px;padding:5px 0;font-size:.9rem;}
-  .att-row .pctb{flex:none;font-weight:800;min-width:56px;text-align:center;border-radius:7px;padding:2px 6px;font-size:.85rem;}
-  .att-row .qn{color:var(--ink2);}
-  /* qualitative */
-  .qual .qitem{padding:9px 12px;margin:8px 0;border-left:3px solid var(--accent);background:#f7f9fc;border-radius:0 8px 8px 0;font-size:.9rem;color:var(--ink);}
-  .qual .qitem .who{font-size:.78rem;color:var(--muted);font-weight:700;margin-right:6px;}
-  .qual .empty{font-size:.9rem;color:var(--muted);padding:10px 2px;}
-  /* accreditation cards */
-  .acc-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
-  @media(max-width:820px){.acc-grid{grid-template-columns:1fr;}}
-  .acc{padding:20px 22px;position:relative;overflow:hidden;}
-  .acc .tag{font-size:.8rem;color:var(--muted);font-weight:700;}
-  .acc h3{font-size:1.14rem;font-weight:800;margin:2px 0 2px;}
-  .acc .src{font-size:.8rem;color:var(--muted);margin-bottom:16px;}
-  .metric-row{display:flex;gap:16px;}
-  .metric{flex:1;text-align:center;}
-  .gauge{position:relative;width:118px;height:118px;margin:0 auto 4px;}
-  .gauge .val{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
-  .gauge .num{font-size:1.5rem;font-weight:800;line-height:1;}
-  .gauge .thr{font-size:.72rem;color:var(--muted);margin-top:3px;}
-  .metric .lbl{font-size:.9rem;font-weight:700;margin-top:2px;}
-  .metric .det{font-size:.78rem;color:var(--muted);}
-  .badge{display:inline-flex;align-items:center;gap:5px;font-size:.78rem;font-weight:800;
-    padding:3px 10px;border-radius:999px;margin-top:5px;}
-  .b-pass{color:var(--pass);background:var(--passbg);}
-  .b-fail{color:var(--fail);background:var(--failbg);}
-  .verdict{margin-top:16px;padding:12px 14px;border-radius:12px;font-weight:800;display:flex;
-    align-items:center;justify-content:space-between;font-size:.95rem;}
-  .v-pass{background:var(--passbg);color:var(--pass);border:1px solid #bfe6cf;}
-  .v-fail{background:var(--failbg);color:var(--fail);border:1px solid #f3c9c9;}
-  .verdict .score{font-size:.82rem;font-weight:700;}
-
-  /* action panel */
-  .action{margin-top:18px;padding:18px 22px;border:1px solid #f3c9c9;background:#fdf5f5;border-radius:16px;}
-  .action h4{font-size:1.02rem;font-weight:800;color:var(--fail);display:flex;align-items:center;gap:8px;}
-  .action.rr-ok{border:1px solid #bfe6cf;background:#f2fbf6;}
-  .action p{font-size:.9rem;color:var(--ink2);margin-top:6px;}
-  .action .big{font-weight:800;color:var(--fail);}
-  .gap-tbl{width:100%;border-collapse:collapse;margin-top:12px;font-size:.86rem;}
-  .gap-tbl th,.gap-tbl td{padding:7px 10px;border-bottom:1px solid #eee;text-align:center;}
-  .gap-tbl th{background:#fff;color:var(--muted);font-weight:700;}
-  .gap-tbl td:first-child,.gap-tbl th:first-child{text-align:left;}
-  .miss{color:var(--fail);font-weight:800;}
-
-  /* tabs */
-  .tabs{display:inline-flex;background:#e3e8ef;border-radius:12px;padding:4px;margin:6px 0 4px;}
-  .tabs button{border:none;background:transparent;font:inherit;font-weight:700;font-size:.95rem;
-    padding:8px 22px;border-radius:9px;cursor:pointer;color:var(--ink2);transition:.15s;}
-  .tabs button.on{background:#fff;color:var(--accent);box-shadow:var(--shadow);}
-
-  /* kpi */
-  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
-  @media(max-width:820px){.kpis{grid-template-columns:1fr 1fr;}}
-  .kpi{padding:16px 18px;text-align:center;}
-  .kpi .n{font-size:1.7rem;font-weight:800;}
-  .kpi .k{font-size:.85rem;color:var(--muted);margin-top:2px;}
-  .kpi.hl .n{color:var(--accent);}
-
-  .two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;}
-  @media(max-width:820px){.two{grid-template-columns:1fr;}}
-  .panel{padding:18px 20px;}
-  .panel h4{font-size:1rem;font-weight:800;margin-bottom:12px;}
-
-  /* dimension band */
-  .dim{margin-bottom:11px;}
-  .dim .top{display:flex;justify-content:space-between;font-size:.9rem;font-weight:700;margin-bottom:4px;}
-  .dim .track{height:14px;background:#eef1f5;border-radius:7px;overflow:hidden;position:relative;}
-  .dim .fill{height:100%;border-radius:7px;background:linear-gradient(90deg,var(--s),var(--vs));}
-  .dim .thrline{position:absolute;top:-3px;bottom:-3px;left:80%;width:2px;background:var(--fail);opacity:.55;}
-
-  /* per-question */
-  .q{padding:9px 0;border-bottom:1px solid var(--line);}
-  .q:last-child{border-bottom:none;}
-  .q .qtop{display:flex;justify-content:space-between;gap:10px;font-size:.88rem;margin-bottom:5px;}
-  .q .qtxt{color:var(--ink2);}
-  .q .qsat{font-weight:800;white-space:nowrap;}
-  .stack{display:flex;height:11px;border-radius:6px;overflow:hidden;background:#eef1f5;}
-  .stack span{display:block;height:100%;}
-  .legend{display:flex;flex-wrap:wrap;gap:14px;font-size:.8rem;color:var(--ink2);margin:2px 0 14px;}
-  .legend i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:5px;vertical-align:-1px;}
-
-  /* job category */
-  .jc{margin-bottom:10px;}
-  .jc .jtop{display:flex;justify-content:space-between;font-size:.88rem;margin-bottom:4px;}
-  .jc .jname{font-weight:700;}
-  .jc .jrate{font-weight:800;}
-  .jc .track{height:13px;background:#eef1f5;border-radius:7px;overflow:hidden;position:relative;}
-  .jc .fill{height:100%;border-radius:7px;}
-  .jc .thrline{position:absolute;top:-3px;bottom:-3px;left:70%;width:2px;background:#334;opacity:.45;}
-  .foot{color:var(--muted);font-size:.78rem;text-align:center;margin-top:30px;}
-  /* detail table */
-  .detail-meta{font-size:.86rem;color:var(--muted);margin-bottom:12px;}
-  .detail-sum{display:flex;flex-wrap:wrap;align-items:center;gap:10px 20px;
-    background:var(--accent-soft);border:1px solid #d6e4f5;border-radius:12px;padding:12px 16px;margin-bottom:12px;}
-  .detail-sum .big{font-size:1.05rem;font-weight:800;color:var(--ink);}
-  .detail-sum .big b{color:var(--accent);}
-  .detail-sum .rr{font-weight:800;}
-  .cat-chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:12px;}
-  .cat-chips .chip{font-size:.8rem;font-weight:700;padding:5px 12px;border-radius:999px;
-    border:1px solid var(--line);background:#fff;color:var(--ink2);cursor:pointer;transition:.12s;user-select:none;}
-  .cat-chips .chip:hover{border-color:var(--accent);background:var(--accent-soft);}
-  .cat-chips .chip b{color:var(--accent);}
-  .cat-chips .chip.low b{color:var(--fail);}
-  .cat-chips .chip.active{background:var(--accent);border-color:var(--accent);color:#fff;}
-  .cat-chips .chip.active b{color:#fff;}
-  .cat-chips .chip.allc{font-weight:800;}
-  .detail-count{font-size:.82rem;color:var(--ink2);margin-bottom:10px;}
-  .detail-count b{color:var(--accent);}
-  .detail-legend{display:flex;flex-wrap:wrap;gap:12px;font-size:.8rem;color:var(--ink2);margin-bottom:12px;}
-  .detail-legend span{display:inline-flex;align-items:center;gap:5px;}
-  .detail-legend i{display:inline-block;width:22px;height:16px;border-radius:4px;text-align:center;
-    font-size:.72rem;font-weight:800;line-height:16px;}
-  .detail-wrap{overflow:auto;max-height:70vh;border:1px solid var(--line);border-radius:12px;}
-  .detail-tbl{border-collapse:separate;border-spacing:0;font-size:.8rem;white-space:nowrap;}
-  .detail-tbl th,.detail-tbl td{padding:5px 7px;text-align:center;border-bottom:1px solid var(--line);border-right:1px solid #f0f2f6;}
-  .detail-tbl thead th{position:sticky;top:0;z-index:3;background:var(--accent);color:#fff;font-weight:700;
-    cursor:help;padding:7px 8px;}
-  .detail-tbl td.cell{font-weight:800;min-width:30px;}
-  .detail-tbl th.sticky,.detail-tbl td.sticky{position:sticky;left:0;z-index:2;background:#f7f9fc;
-    border-right:1px solid var(--line);font-weight:700;color:var(--ink2);}
-  .detail-tbl thead th.sticky{z-index:4;background:#245a97;}
-  .detail-tbl td.catcol{background:#f7f9fc;font-weight:700;color:var(--ink2);white-space:nowrap;}
-  .detail-tbl td.timecol{color:var(--muted);font-weight:500;white-space:nowrap;}
-  .detail-tbl td.textcol{white-space:normal;min-width:220px;max-width:320px;text-align:left;color:var(--ink2);}
-  .detail-tbl tbody tr:hover td:not(.cell){background:#eef3fa;}
-  /* rules table */
-  .rule-tbl{width:100%;border-collapse:collapse;font-size:.9rem;margin-top:4px;}
-  .rule-tbl th{background:var(--accent);color:#fff;padding:11px 12px;font-weight:800;text-align:center;}
-  .rule-tbl td{padding:11px 12px;border-bottom:1px solid var(--line);vertical-align:middle;}
-  .rule-tbl .code{font-weight:800;color:var(--ink);white-space:nowrap;}
-  .rule-tbl .thr{color:var(--accent);font-weight:700;white-space:nowrap;text-align:center;}
-  .rule-tbl .sc{text-align:center;font-weight:800;font-size:1.05rem;width:64px;}
-  .rule-tbl .total td{background:#f2f5f9;font-weight:800;font-size:1.02rem;text-align:center;}
-  .rule-tbl tr.mine{background:#eaf1fa;}
-  .rule-tbl tr.mine .code{color:var(--accent);}
-  .st-pill{display:inline-block;font-size:.74rem;font-weight:800;padding:2px 9px;border-radius:999px;margin-left:6px;}
-  .st-pass{color:var(--pass);background:var(--passbg);}
-  .st-fail{color:var(--fail);background:var(--failbg);}
-  .rule-note{font-size:.85rem;color:var(--ink2);margin-top:14px;line-height:1.7;}
-  .rule-note b{color:var(--accent);}
-  .rule-principle{margin-top:14px;padding:14px 16px;background:#fffdf2;border:1px solid #f0e3b0;border-radius:12px;font-size:.88rem;line-height:1.75;color:var(--ink2);}
-  .rule-principle b{color:#8a6d00;}
-  .qtip{position:fixed;z-index:9999;display:none;pointer-events:none;max-width:380px;
-    background:#141a26;color:#fff;font-size:1rem;line-height:1.55;font-weight:600;
-    padding:11px 14px;border-radius:11px;box-shadow:0 8px 28px rgba(0,0,0,.28);white-space:normal;}
-  .hide{display:none!important;}
-  @media print{
-    body{background:#fff;padding:0;}
-    .tabs{display:none;}
-    .tabpane{display:block!important;page-break-inside:avoid;}
-    .card{box-shadow:none;}
-    section{margin-top:14px;}
-  }
+  html{-webkit-text-size-adjust:100%;}
+  body{background-color:#0b1329;color:#e2e8f0;}
+  .glass-card{background:rgba(255,255,255,.03);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.08);}
+  .fld{width:100%;background:rgba(15,23,42,.6);border:1px solid rgba(51,65,85,.6);border-radius:.75rem;padding:.65rem .9rem;color:#fff;font-size:16px;}
+  .fld:focus{outline:none;box-shadow:0 0 0 2px #0ea5e9;}
+  textarea.fld{min-height:150px;line-height:1.7;}
+  .badge{display:inline-flex;align-items:center;gap:.35rem;font-weight:700;border-radius:9999px;padding:.15rem .7rem;font-size:.8rem;}
+  @media (max-width:640px){ textarea.fld{min-height:130px;} }
 </style>
 </head>
-<body>
-<div class="wrap">
-  <h1>115年度 臨床醫事人員培訓計畫 · 計畫執行調查　<span class="trial-tag">試填</span></h1>
-  <div class="sub">評鑑量性指標達標儀表板（試填版）　｜　填答區間 114.09–115.06　｜　教學研究組</div>
+<body class="font-sans min-h-screen py-10 px-4 sm:px-6">
+<div class="max-w-4xl mx-auto">
 
-  <!-- ===== 評鑑達標總覽 ===== -->
-  <section>
-    <div class="sec-title"><span class="bar"></span>評鑑量性指標 達標總覽</div>
-    <div class="note">評分規則：醫院符合獎勵門檻後，量性指標<b>「達閾值即可得分」</b>。
-      量性指標1、2 的閾值皆為 <b>滿意度 ≥ 80%</b> 且 <b>回收率 ≥ 70%</b>，各佔 <b>20 分</b>；
-      兩條件須<b>同時</b>達標才計分。</div>
-    <div id="scoreBanner"></div>
-    <div class="acc-grid" id="accGrid"></div>
-    <div id="rrStuPanel"></div>
-    <div id="actionPanel"></div>
-  </section>
-
-  <!-- ===== 問卷細部 ===== -->
-  <section>
-    <div class="sec-title"><span class="bar"></span>問卷結果細部分析</div>
-    <div class="tabs">
-      <button id="tabStu" class="on" onclick="showTab('stu')">受訓人員（PGY學員）</button>
-      <button id="tabStuRaw" onclick="showTab('sturaw')">受訓人員明細</button>
-      <button id="tabTea" onclick="showTab('tea')">教師</button>
-      <button id="tabTeaRaw" onclick="showTab('tearaw')">教師明細</button>
-      <button id="tabRule" onclick="showTab('rule')">規範</button>
+  <!-- ============ 填報畫面 ============ -->
+  <div id="fillView">
+    <div class="text-center mb-8">
+      <p class="text-sm text-sky-400 font-semibold mb-1">佳里奇美醫院 教學研究組</p>
+      <h1 class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight mb-3" id="pageTitle">教學醫院評鑑委員意見改善進度 線上填報</h1>
+      <p class="text-slate-400 text-sm">請選擇您的職類，系統會帶出您上次尚未執行完成的條號及填報內容，更新後送出即可，若已完成的則此次無顯示。</p>
     </div>
 
-    <div id="pane-stu" class="tabpane"></div>
-    <div id="pane-sturaw" class="tabpane hide"></div>
-    <div id="pane-tea" class="tabpane hide"></div>
-    <div id="pane-tearaw" class="tabpane hide"></div>
-    <div id="pane-rule" class="tabpane hide"></div>
-  </section>
+    <div class="glass-card rounded-2xl p-4 mb-6 text-sm text-amber-200/90 flex items-start gap-3">
+      <i class="fa-solid fa-circle-info mt-1 text-amber-400"></i>
+      <div>
+        <b>填報截止：<span id="deadlineTxt">—</span>（當日 24:00 前）。</b><br>
+        送出後系統會 email 通知教研組，並副本一份給您留存；您也可按「下載我的 Word 存檔」自行備份。若「預定完成年月」需要修改，也可以直接於欄位調整或用日曆重選。
+      </div>
+    </div>
 
-  <div class="foot">資料來源：Google 表單回覆彙整（教師滿意度 · PGY學員調查）｜滿意度＝（非常滿意＋滿意）÷ 填答人數｜本頁可離線瀏覽與列印張貼</div>
+    <!-- 基本資料 + 選職類 -->
+    <div class="glass-card rounded-2xl p-5 sm:p-6 mb-6">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="sm:col-span-2">
+          <label class="block text-sm font-medium text-slate-300 mb-1.5">職類 <span class="text-rose-500">*</span></label>
+          <select id="roleSel" class="fld"><option value="">— 請選擇您的職類 —</option></select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-300 mb-1.5">填表人姓名 <span class="text-rose-500">*</span></label>
+          <input id="filler" class="fld" placeholder="請輸入姓名">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-300 mb-1.5">分機</label>
+          <input id="ext" class="fld" placeholder="院內分機">
+        </div>
+        <div class="sm:col-span-2">
+          <label class="block text-sm font-medium text-slate-300 mb-1.5">您的 Email（用於接收副本存查）</label>
+          <input id="email" type="email" class="fld" placeholder="example@mail.chimei.org.tw">
+        </div>
+      </div>
+    </div>
+
+    <div id="hintPick" class="text-center text-slate-500 py-10">
+      <i class="fa-regular fa-hand-pointer text-3xl mb-3 block"></i>請先於上方選擇職類，即可載入您負責的條號。
+    </div>
+
+    <div id="cards" class="space-y-5"></div>
+
+    <div id="actionBar" class="hidden mt-8 flex flex-col sm:flex-row gap-3">
+      <button id="submitBtn" class="flex-1 bg-gradient-to-r from-sky-600 to-blue-700 text-white font-bold py-3.5 rounded-xl shadow-lg hover:from-sky-500 hover:to-blue-600 active:scale-[.99] transition disabled:opacity-50">
+        <i class="fa-solid fa-paper-plane mr-2"></i>送 出 更 新
+      </button>
+      <button id="wordBtn" class="sm:w-64 bg-slate-700/70 text-white font-bold py-3.5 rounded-xl hover:bg-slate-600 transition">
+        <i class="fa-solid fa-file-word mr-2"></i>下載我的 Word 存檔
+      </button>
+    </div>
+  </div>
+
+  <!-- ============ 承辦人彙整後台 ============ -->
+  <div id="adminView" class="hidden">
+    <div class="text-center mb-8">
+      <p class="text-sm text-sky-400 font-semibold mb-1">教學研究組 · 承辦人彙整後台</p>
+      <h1 class="text-2xl sm:text-3xl font-extrabold text-white mb-2">填報進度彙整</h1>
+      <p class="text-slate-400 text-sm" id="adminSub">—</p>
+    </div>
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6" id="adminStats"></div>
+    <div class="glass-card rounded-2xl p-5 mb-6">
+      <div class="flex flex-wrap gap-3">
+        <button id="aggBtn" class="bg-gradient-to-r from-emerald-600 to-teal-700 text-white font-bold py-3 px-5 rounded-xl hover:from-emerald-500 transition"><i class="fa-solid fa-file-word mr-2"></i>下載彙整一覽表（Word）</button>
+        <button id="copyNagBtn" class="bg-slate-700/70 text-white font-bold py-3 px-5 rounded-xl hover:bg-slate-600 transition"><i class="fa-solid fa-copy mr-2"></i>複製待催填名單</button>
+        <button id="refreshBtn" class="bg-slate-700/70 text-white font-bold py-3 px-5 rounded-xl hover:bg-slate-600 transition"><i class="fa-solid fa-rotate mr-2"></i>重新整理</button>
+      </div>
+    </div>
+    <div id="adminGrid" class="space-y-4"></div>
+  </div>
+
 </div>
-<div id="qtip" class="qtip"></div>
+
+  <!-- ============ 送出成功：灑花感謝 ============ -->
+  <div id="thanksOverlay" style="position:fixed;inset:0;z-index:50;display:none;align-items:center;justify-content:center;background:rgba(2,6,23,.78);backdrop-filter:blur(2px)">
+    <canvas id="confetti" style="position:fixed;inset:0;pointer-events:none"></canvas>
+    <div class="glass-card rounded-2xl p-8 text-center mx-4" style="position:relative;max-width:22rem">
+      <div style="font-size:46px" class="mb-1">🎉</div>
+      <h3 class="text-2xl font-extrabold text-white mb-3">感謝您的填報！</h3>
+      <p class="text-slate-300 text-sm leading-relaxed mb-5">系統已通知教學研究組，並將填報完成確認信寄到您的信箱，敬請留存備查。</p>
+      <button id="thanksClose" class="w-full bg-gradient-to-r from-sky-600 to-blue-700 text-white font-bold py-3 rounded-xl hover:from-sky-500 transition">好 的</button>
+    </div>
+  </div>
 
 <script>
-const DATA = {"pgy": {"dims": [{"name": "工作滿意度", "sat": 0.941176470588235}, {"name": "醫院資源", "sat": 0.941176470588235}, {"name": "臨床教師", "sat": 0.990196078431373}, {"name": "訓練過程", "sat": 0.984313725490196}, {"name": "訓練時間", "sat": 1}, {"name": "自我評量", "sat": 0.983660130718954}, {"name": "對本計畫看法", "sat": 0.911764705882353}], "questions": [{"q": "在學習獨立工作過程，獲得合宜的督導或協助", "vs": 24, "s": 26, "ok": 1, "ns": 0, "vns": 0, "total": 51, "sat": 0.980392156862745}, {"q": "醫院提供的整體訓練規劃，讓我從中獲得成就感", "vs": 23, "s": 25, "ok": 3, "ns": 0, "vns": 0, "total": 51, "sat": 0.941176470588235}, {"q": "當表現優良時，獲得的肯定或獎勵", "vs": 25, "s": 24, "ok": 2, "ns": 0, "vns": 0, "total": 51, "sat": 0.96078431372549}, {"q": "主管對待我的方式", "vs": 26, "s": 21, "ok": 4, "ns": 0, "vns": 0, "total": 51, "sat": 0.92156862745098}, {"q": "部門同事間的相處、協助與支持", "vs": 25, "s": 24, "ok": 2, "ns": 0, "vns": 0, "total": 51, "sat": 0.96078431372549}, {"q": "工作所需的設施與環境條件", "vs": 22, "s": 27, "ok": 2, "ns": 0, "vns": 0, "total": 51, "sat": 0.96078431372549}, {"q": "工作時間內的負荷", "vs": 17, "s": 27, "ok": 7, "ns": 0, "vns": 0, "total": 51, "sat": 0.862745098039216}, {"q": "醫院提供我學習相關權益反映的管道", "vs": 24, "s": 22, "ok": 4, "ns": 1, "vns": 0, "total": 51, "sat": 0.901960784313726}, {"q": "醫院提供教學訓練所需設施與環境(包含網路教學平台、圖書、期刊、訓練場所等空間及設備)", "vs": 23, "s": 26, "ok": 2, "ns": 0, "vns": 0, "total": 51, "sat": 0.96078431372549}, {"q": "醫院提供我的安全防護措施及教育訓練，足以因應各類疾病及病人療護", "vs": 24, "s": 25, "ok": 2, "ns": 0, "vns": 0, "total": 51, "sat": 0.96078431372549}, {"q": "臨床教師依據我學前評估的結果安排訓練課程", "vs": 30, "s": 21, "ok": 0, "ns": 0, "vns": 0, "total": 51, "sat": 1}, {"q": "臨床教師教學技能", "vs": 29, "s": 22, "ok": 0, "ns": 0, "vns": 0, "total": 51, "sat": 1}, {"q": "臨床教師對我評量的頻率", "vs": 29, "s": 21, "ok": 1, "ns": 0, "vns": 0, "total": 51, "sat": 0.980392156862745}, {"q": "臨床教師對我評量結果的回饋", "vs": 30, "s": 21, "ok": 0, "ns": 0, "vns": 0, "total": 51, "sat": 1}, {"q": "臨床教師對我的關心與輔導", "vs": 30, "s": 20, "ok": 1, "ns": 0, "vns": 0, "total": 51, "sat": 0.980392156862745}, {"q": "整體而言，我服務部門之教師教學的投入程度", "vs": 30, "s": 20, "ok": 1, "ns": 0, "vns": 0, "total": 51, "sat": 0.980392156862745}, {"q": "訓練課程的執行情況", "vs": 26, "s": 24, "ok": 1, "ns": 0, "vns": 0, "total": 51, "sat": 0.980392156862745}, {"q": "記載學習紀錄可以讓我掌握訓練進度", "vs": 27, "s": 22, "ok": 2, "ns": 0, "vns": 0, "total": 51, "sat": 0.96078431372549}, {"q": "記載學習紀錄可以幫助我反思", "vs": 26, "s": 24, "ok": 1, "ns": 0, "vns": 0, "total": 51, "sat": 0.980392156862745}, {"q": "參與跨領域團隊合作照護之機會", "vs": 27, "s": 24, "ok": 0, "ns": 0, "vns": 0, "total": 51, "sat": 1}, {"q": "跨領域團隊合作照護有助於了解各類別醫療專業，學習全人照護的理念與素養", "vs": 26, "s": 25, "ok": 0, "ns": 0, "vns": 0, "total": 51, "sat": 1}, {"q": "我認為平均每週臨床教師督導或協助的訓練時間", "vs": 27, "s": 24, "ok": 0, "ns": 0, "vns": 0, "total": 51, "sat": 1}, {"q": "工作與學習時段的安排", "vs": 27, "s": 24, "ok": 0, "ns": 0, "vns": 0, "total": 51, "sat": 1}, {"q": "整體訓練計畫銜接學校教育與臨床工作的成效", "vs": 21, "s": 29, "ok": 1, "ns": 0, "vns": 0, "total": 51, "sat": 0.980392156862745}, {"q": "臨床實務能力提升", "vs": 24, "s": 27, "ok": 0, "ns": 0, "vns": 0, "total": 51, "sat": 1}, {"q": "我與團隊成員互動溝通的能力", "vs": 21, "s": 29, "ok": 1, "ns": 0, "vns": 0, "total": 51, "sat": 0.980392156862745}, {"q": "我與病人或病人家屬互動溝通的能力", "vs": 19, "s": 31, "ok": 1, "ns": 0, "vns": 0, "total": 51, "sat": 0.980392156862745}, {"q": "接受2年期訓練計畫後，我認為我已具備訓練計畫中相關之臨床業務的能力", "vs": 20, "s": 30, "ok": 1, "ns": 0, "vns": 0, "total": 51, "sat": 0.980392156862745}, {"q": "依照訓練計畫，接受訓練後，具備核心能力的訓練成效，自我評分為", "vs": 19, "s": 31, "ok": 1, "ns": 0, "vns": 0, "total": 51, "sat": 0.980392156862745}, {"q": "整體而言，我對我的訓練醫院的評分", "vs": 21, "s": 29, "ok": 1, "ns": 0, "vns": 0, "total": 51, "sat": 0.980392156862745}, {"q": "整體而言，我支持衛生福利部持續推廣與執行本計畫", "vs": 22, "s": 28, "ok": 1, "ns": 0, "vns": 0, "total": 51, "sat": 0.980392156862745}, {"q": "未來如果有機會，我樂意擔任臨床教師指導學弟/妹", "vs": 17, "s": 23, "ok": 9, "ns": 2, "vns": 0, "total": 51, "sat": 0.784313725490196}, {"q": "我會推薦學弟/妹畢業後到教學醫院接受此訓練", "vs": 19, "s": 27, "ok": 5, "ns": 0, "vns": 0, "total": 51, "sat": 0.901960784313726}], "overall": 0.964349376114082, "stu_rr": {"藥師": {"req": "-", "got": "-", "rate": "-"}, "醫事放射師": {"req": 4, "got": 3, "rate": 0.75}, "醫事檢驗師": {"req": 3, "got": 2, "rate": 0.666666666666667}, "護理師": {"req": 43, "got": 41, "rate": 0.953488372093023}, "營養師": {"req": "-", "got": "-", "rate": "-"}, "呼吸治療師": {"req": "-", "got": "-", "rate": "-"}, "物理治療師": {"req": 4, "got": 3, "rate": 0.75}, "職能治療師": {"req": "-", "got": "-", "rate": "-"}, "語言治療師": {"req": 2, "got": 2, "rate": 1}, "_total": {"req": 56, "got": 51, "rate": 0.910714285714286}}, "tea_rr": {"藥師": {"req": "-", "got": "-", "rate": "-"}, "醫事放射師": {"req": 7, "got": 2, "rate": 0.285714285714286}, "醫事檢驗師": {"req": 3, "got": 1, "rate": 0.333333333333333}, "護理師": {"req": 30, "got": 23, "rate": 0.766666666666667}, "營養師": {"req": "-", "got": "-", "rate": "-"}, "呼吸治療師": {"req": "-", "got": "-", "rate": "-"}, "物理治療師": {"req": 4, "got": 2, "rate": 0.5}, "職能治療師": {"req": "-", "got": "-", "rate": "-"}, "語言治療師": {"req": 1, "got": 1, "rate": 1}, "_total": {"req": 45, "got": 29, "rate": 0.644444444444445}}, "raw": {"cols": [{"lbl": "時間", "full": "時間戳記", "kind": "time"}, {"lbl": "職類", "full": "職類別", "kind": "cat"}, {"lbl": "Q1", "full": "【工作滿意度】 [1.在學習獨立工作過程，獲得合宜的督導或協助]", "kind": "likert"}, {"lbl": "Q2", "full": "【工作滿意度】 [2.醫院提供的整體訓練規劃，讓我從中獲得成就感]", "kind": "likert"}, {"lbl": "Q3", "full": "【工作滿意度】 [3. 當表現優良時，獲得的肯定或獎勵]", "kind": "likert"}, {"lbl": "Q4", "full": "【工作滿意度】 [4. 主管對待我的方式]", "kind": "likert"}, {"lbl": "Q5", "full": "【工作滿意度】 [5. 部門同事間的相處、協助與支持]", "kind": "likert"}, {"lbl": "Q6", "full": "【工作滿意度】 [6. 工作所需的設施與環境條件]", "kind": "likert"}, {"lbl": "Q7", "full": "【工作滿意度】 [7. 工作時間內的負荷]", "kind": "likert"}, {"lbl": "Q8", "full": "【醫院資源】 [8.醫院提供我學習相關權益反映的管道]", "kind": "likert"}, {"lbl": "Q9", "full": "【醫院資源】 [9. 醫院提供教學訓練所需設施與環境(包含網路教學平台、圖書、期刊、訓練場所等空間及設備)]", "kind": "likert"}, {"lbl": "Q10", "full": "【醫院資源】 [10. 醫院提供我的安全防護措施及教育訓練，足以因應各類疾病及病人療護]", "kind": "likert"}, {"lbl": "Q11", "full": "【臨床教師】 [11. 臨床教師依據我學前評估的結果安排訓練課程]", "kind": "likert"}, {"lbl": "Q12", "full": "【臨床教師】 [12. 臨床教師教學技能]", "kind": "likert"}, {"lbl": "Q13", "full": "【臨床教師】 [13. 臨床教師對我評量的頻率]", "kind": "likert"}, {"lbl": "Q14", "full": "【臨床教師】 [14. 臨床教師對我評量結果的回饋]", "kind": "likert"}, {"lbl": "Q15", "full": "【臨床教師】 [15. 臨床教師對我的關心與輔導]", "kind": "likert"}, {"lbl": "Q16", "full": "【臨床教師】 [16. 整體而言，我服務部門之教師教學的投入程度]", "kind": "likert"}, {"lbl": "Q17", "full": "【訓練過程】 [17. 訓練課程的執行情況]", "kind": "likert"}, {"lbl": "Q18", "full": "【訓練過程】 [18. 記載學習紀錄可以讓我掌握訓練進度]", "kind": "likert"}, {"lbl": "Q19", "full": "【訓練過程】 [19. 記載學習紀錄可以幫助我反思]", "kind": "likert"}, {"lbl": "Q20", "full": "【訓練過程】 [20. 參與跨領域團隊合作照護之機會]", "kind": "likert"}, {"lbl": "Q21", "full": "【訓練過程】 [21. 跨領域團隊合作照護有助於了解各類別醫療專業，學習全人照護的理念與素養]", "kind": "likert"}, {"lbl": "Q22", "full": "【訓練時間】 [22.我認為平均每週臨床教師督導或協助的訓練時間]", "kind": "likert"}, {"lbl": "Q23", "full": "【訓練時間】 [23.工作與學習時段的安排]", "kind": "likert"}, {"lbl": "Q24", "full": "【自我評量】 [24.整體訓練計畫銜接學校教育與臨床工作的成效]", "kind": "likert"}, {"lbl": "Q25", "full": "【自我評量】 [25.臨床實務能力提升]", "kind": "likert"}, {"lbl": "Q26", "full": "【自我評量】 [26.我與團隊成員互動溝通的能力]", "kind": "likert"}, {"lbl": "Q27", "full": "【自我評量】 [27.我與病人或病人家屬互動溝通的能力]", "kind": "likert"}, {"lbl": "Q28", "full": "【自我評量】 [28.接受2年期訓練計畫後，我認為我已具備訓練計畫中相關之臨床業務的能力]", "kind": "likert"}, {"lbl": "Q29", "full": "【自我評量】 [29.依照訓練計畫，接受訓練後，具備核心能力的訓練成效，自我評分為]", "kind": "likert"}, {"lbl": "整體而言，我", "full": "【對本計畫看法】 [整體而言，我對我的訓練醫院的評分]", "kind": "likert"}, {"lbl": "Q31", "full": "【對本計畫看法】 [31.整體而言，我支持衛生福利部持續推廣與執行本計畫]", "kind": "likert"}, {"lbl": "Q32", "full": "【對本計畫看法】 [32.未來如果有機會，我樂意擔任臨床教師指導學弟/妹]", "kind": "likert"}, {"lbl": "Q33", "full": "【對本計畫看法】 [33.我會推薦學弟/妹畢業後到教學醫院接受此訓練]", "kind": "likert"}, {"lbl": "建議", "full": "34.接受訓練計畫後，我對於整體計畫有何建議？", "kind": "text"}], "rows": [["2026-07-24 16:04", "護理師", 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 4, 4, 4, 4, 5, 5, 4, 4, "無"], ["2026-07-24 16:17", "護理師", 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, "沒有"], ["2026-07-24 16:18", "護理師", 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, "無"], ["2026-07-24 16:42", "護理師", 5, 5, 5, 5, 5, 5, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 4, 5, "無"], ["2026-07-24 16:44", "護理師", 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, "無"], ["2026-07-24 16:44", "護理師", 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, "無"], ["2026-07-24 16:44", "護理師", 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 4, 5, 4, 4, 4, 4, 4, 4, 4, 4, "無"], ["2026-07-24 16:54", "護理師", 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, ""], ["2026-07-24 17:00", "護理師", 5, 5, 5, 5, 5, 5, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 4, "無"], ["2026-07-24 17:14", "護理師", 5, 4, 5, 5, 5, 4, 3, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 4, 4, 3, 4, ""], ["2026-07-24 17:36", "護理師", 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, ""], ["2026-07-24 17:42", "護理師", 5, 5, 5, 4, 4, 5, 4, 5, 5, 5, 5, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 4, "無"], ["2026-07-24 17:48", "護理師", 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, "👍🏻"], ["2026-07-24 18:50", "護理師", 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, ""], ["2026-07-24 19:04", "護理師", 5, 5, 5, 5, 5, 5, 3, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 4, 4, 4, 4, 4, 2, 4, "無"], ["2026-07-24 19:05", "護理師", 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 2, 5, ""], ["2026-07-24 21:32", "護理師", 4, 5, 5, 5, 5, 5, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, ""], ["2026-07-24 21:47", "護理師", 3, 3, 4, 3, 4, 3, 3, 2, 3, 3, 5, 5, 5, 5, 4, 5, 3, 3, 4, 4, 4, 4, 4, 4, 4, 3, 3, 4, 4, 3, 3, 3, 3, "無"], ["2026-07-25 11:43", "護理師", 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, "無"], ["2026-07-25 18:59", "護理師", 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 4, 4, 4, 4, 4, 4, 4, 4, "無"], ["2026-07-26 15:34", "護理師", 5, 5, 5, 5, 5, 4, 3, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, "無"], ["2026-07-26 20:51", "護理師", 5, 4, 5, 5, 5, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 4, 4, 4, 5, 5, 5, 5, 5, 4, 4, 4, 4, 4, 4, 4, 4, 3, 5, "無"], ["2026-07-27 11:10", "護理師", 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, "無"], ["2026-07-27 14:02", "護理師", 4, 4, 4, 4, 4, 4, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 3, 3, "無"], ["2026-07-27 15:05", "醫事檢驗師", 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, ""], ["2026-07-27 15:14", "醫事放射師", 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, "無"], ["2026-07-29 11:17", "護理師", 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, ""], ["2026-07-29 11:32", "護理師", 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, "無"], ["2026-07-29 11:35", "護理師", 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, ""], ["2026-07-29 11:51", "護理師", 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, "無"], ["2026-07-29 12:19", "護理師", 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, "無"], ["2026-07-29 12:57", "護理師", 4, 4, 4, 4, 3, 4, 4, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 3, 3, ""], ["2026-07-29 13:04", "語言治療師", 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 3, 4, ""], ["2026-07-29 13:26", "語言治療師", 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, "無"], ["2026-07-29 13:50", "護理師", 4, 4, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 3, 4, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 3, 3, ""], ["2026-07-29 15:43", "護理師", 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, ""], ["2026-07-30 09:41", "護理師", 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, "無"], ["2026-07-31 11:59", "護理師", 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, ""], ["2026-07-31 12:39", "醫事放射師", 4, 3, 4, 3, 4, 4, 4, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, "無"], ["2026-07-31 12:39", "醫事放射師", 4, 4, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 4, 4, 4, 4, 4, 4, 4, 5, 4, 5, 4, 4, 4, 4, 4, "無"], ["2026-07-31 18:21", "護理師", 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 4, 4, 4, 4, 4, 5, 5, 4, 5, "無"], ["2026-07-31 19:01", "護理師", 4, 4, 5, 5, 5, 5, 5, 5, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 4, 5, 5, 5, 4, 4, 4, 4, 4, 5, 5, 5, 5, ""], ["2026-08-01 11:41", "護理師", 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, "無"], ["2026-08-01 16:33", "護理師", 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 3, 4, "無"], ["2026-08-02 04:34", "護理師", 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 4, 5, 5, 5, 5, 5, 4, 4, 4, 4, "無"], ["2026-08-02 07:38", "護理師", 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, "無"], ["2026-08-02 08:12", "醫事檢驗師", 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, ""], ["2026-08-03 18:42", "護理師", 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, ""], ["2026-08-05 15:00", "物理治療師", 5, 5, 4, 5, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 4, 4, 4, 5, 5, 5, 5, 3, 5, 4, 4, 5, 5, 5, 5, 5, 5, "在這項計劃經濟，我可以肯定的感覺到我的臨床能力有明顯的進步。在剛開始工作時，面對病人往往都還是會有猶豫以及不確定，但在醫院以及臨床導師的引導下，我可以更有自信以及更有效的提供病人及其照顧者協助與治療。"], ["2026-08-05 15:24", "物理治療師", 4, 3, 4, 5, 5, 4, 3, 3, 3, 3, 5, 5, 5, 5, 5, 5, 4, 3, 3, 4, 4, 4, 4, 4, 5, 5, 5, 3, 3, 4, 5, 3, 3, ""], ["2026-08-05 15:25", "物理治療師", 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, ""]]}}, "tea": {"dims": [{"name": "醫院執行計畫", "sat": 0.980769230769231}, {"name": "師資培育", "sat": 0.9921875}, {"name": "教學時間", "sat": 0.9375}, {"name": "受訓人員訓練成效", "sat": 0.9875}, {"name": "對本計畫看法", "sat": 0.958333333333333}], "questions": [{"q": "醫院提供的教學設備與資源(包括軟硬體)都能滿足我的教學所需", "vs": 17, "s": 15, "ok": 0, "ns": 0, "vns": 0, "total": 32, "sat": 1}, {"q": "醫院具充分教學交流平台，供各醫事職類經驗分享", "vs": 17, "s": 15, "ok": 0, "ns": 0, "vns": 0, "total": 32, "sat": 1}, {"q": "我認為醫院支付予我的教學津貼或提供的獎勵措施是合理的", "vs": 14, "s": 15, "ok": 2, "ns": 1, "vns": 0, "total": 32, "sat": 0.90625}, {"q": "我對於訓練課程的相關意見有適切的反映管道", "vs": 18, "s": 14, "ok": 0, "ns": 0, "vns": 0, "total": 32, "sat": 1}, {"q": "我能依據受訓人員學前評估的結果，安排訓練課程", "vs": 18, "s": 14, "ok": 0, "ns": 0, "vns": 0, "total": 32, "sat": 1}, {"q": "我認為學習歷程檔案或學習護照利多於弊，可繼續使用", "vs": 17, "s": 12, "ok": 2, "ns": 1, "vns": 0, "total": 32, "sat": 0.90625}, {"q": "我能運用適當的評估方法評量受訓人員", "vs": 18, "s": 13, "ok": 1, "ns": 0, "vns": 0, "total": 32, "sat": 0.96875}, {"q": "我能在訓練過程適時回饋受訓人員", "vs": 19, "s": 13, "ok": 0, "ns": 0, "vns": 0, "total": 32, "sat": 1}, {"q": "醫院能充分整合或協助各醫事職類執行跨領域團隊合作照護訓練活動", "vs": 16, "s": 16, "ok": 0, "ns": 0, "vns": 0, "total": 32, "sat": 1}, {"q": "醫院能充分協助本單位協調聯合訓練相關事宜", "vs": 17, "s": 15, "ok": 0, "ns": 0, "vns": 0, "total": 32, "sat": 1}, {"q": "醫院制訂的教師教學評估機制適當", "vs": 17, "s": 14, "ok": 1, "ns": 0, "vns": 0, "total": 32, "sat": 0.96875}, {"q": "我能得知自己的教學表現評估結果", "vs": 17, "s": 15, "ok": 0, "ns": 0, "vns": 0, "total": 32, "sat": 1}, {"q": "醫院能將我的教學貢獻與成效反映於升遷或績效考核結果上", "vs": 16, "s": 16, "ok": 0, "ns": 0, "vns": 0, "total": 32, "sat": 1}, {"q": "醫院師資培育相關計畫完整、健全", "vs": 19, "s": 13, "ok": 0, "ns": 0, "vns": 0, "total": 32, "sat": 1}, {"q": "我常有機會參與師資培育課程", "vs": 19, "s": 13, "ok": 0, "ns": 0, "vns": 0, "total": 32, "sat": 1}, {"q": "醫院能補助或提供我參與師資培育課程之資源(如公假、報名費、交通費等)", "vs": 19, "s": 12, "ok": 1, "ns": 0, "vns": 0, "total": 32, "sat": 0.96875}, {"q": "參與師資培育課程對我的教學有幫助", "vs": 19, "s": 13, "ok": 0, "ns": 0, "vns": 0, "total": 32, "sat": 1}, {"q": "我被分派承擔的教學時間合理", "vs": 17, "s": 13, "ok": 2, "ns": 0, "vns": 0, "total": 32, "sat": 0.9375}, {"q": "我所指導的受訓人員，訓練課程的執行情況良好", "vs": 17, "s": 15, "ok": 0, "ns": 0, "vns": 0, "total": 32, "sat": 1}, {"q": "我所指導的受訓人員，記載學習紀錄成效良好(如學習檢核表、學習手冊、學習護照、學習歷程檔案等)", "vs": 18, "s": 12, "ok": 2, "ns": 0, "vns": 0, "total": 32, "sat": 0.9375}, {"q": "我所指導的受訓人員，參與跨領域團隊合作照護訓練之機會足夠", "vs": 19, "s": 13, "ok": 0, "ns": 0, "vns": 0, "total": 32, "sat": 1}, {"q": "承上，跨領域團隊合作照護訓練有助於整合各類別醫療專業，達成全人照護的理念及素養", "vs": 18, "s": 14, "ok": 0, "ns": 0, "vns": 0, "total": 32, "sat": 1}, {"q": "我所指導的受訓人員，專業知識有提升", "vs": 18, "s": 13, "ok": 1, "ns": 0, "vns": 0, "total": 32, "sat": 0.96875}, {"q": "我所指導的受訓人員，臨床實務能力有提升", "vs": 18, "s": 13, "ok": 1, "ns": 0, "vns": 0, "total": 32, "sat": 0.96875}, {"q": "我所指導的受訓人員，有正確、良好的臨床專業態度", "vs": 17, "s": 15, "ok": 0, "ns": 0, "vns": 0, "total": 32, "sat": 1}, {"q": "如果我是病人，會樂意讓我所指導的受訓人員照護或服務", "vs": 17, "s": 15, "ok": 0, "ns": 0, "vns": 0, "total": 32, "sat": 1}, {"q": "我認為我所指導的受訓人員，接受2年期訓練計畫後，確實具備可獨立執行臨床業務的能力", "vs": 17, "s": 15, "ok": 0, "ns": 0, "vns": 0, "total": 32, "sat": 1}, {"q": "我所指導的受訓人員，核心能力的訓練成效為", "vs": 18, "s": 14, "ok": 0, "ns": 0, "vns": 0, "total": 32, "sat": 1}, {"q": "整體而言，我對醫院執行訓練計畫的評分(最好5分~最差1分；非常滿意５分，非常不滿意１分)", "vs": 17, "s": 14, "ok": 1, "ns": 0, "vns": 0, "total": 32, "sat": 0.96875}, {"q": "整體而言，我支持衛生福利部未來能持續推廣與執行本計畫", "vs": 15, "s": 15, "ok": 2, "ns": 0, "vns": 0, "total": 32, "sat": 0.9375}, {"q": "我未來樂意繼續擔任教師 (回答「是」之百分比)", "vs": 16, "s": 15, "ok": 1, "ns": 0, "vns": 0, "total": 32, "sat": 0.96875}], "overall": 0.980846774193548, "stu_rr": {"藥師": {"req": "-", "got": "-", "rate": "-"}, "醫事放射師": {"req": 4, "got": 3, "rate": 0.75}, "醫事檢驗師": {"req": 3, "got": 2, "rate": 0.666666666666667}, "護理師": {"req": 43, "got": 41, "rate": 0.953488372093023}, "營養師": {"req": "-", "got": "-", "rate": "-"}, "呼吸治療師": {"req": "-", "got": "-", "rate": "-"}, "物理治療師": {"req": 4, "got": 0, "rate": 0}, "職能治療師": {"req": "-", "got": "-", "rate": "-"}, "語言治療師": {"req": 2, "got": 2, "rate": 1}, "_total": {"req": 56, "got": 48, "rate": 0.857142857142857}}, "tea_rr": {"藥師": {"req": "-", "got": "-", "rate": "-"}, "醫事放射師": {"req": 7, "got": 2, "rate": 0.285714285714286}, "醫事檢驗師": {"req": 3, "got": 2, "rate": 0.666666666666667}, "護理師": {"req": 30, "got": 24, "rate": 0.8}, "營養師": {"req": "-", "got": "-", "rate": "-"}, "呼吸治療師": {"req": "-", "got": "-", "rate": "-"}, "物理治療師": {"req": 4, "got": 3, "rate": 0.75}, "職能治療師": {"req": "-", "got": "-", "rate": "-"}, "語言治療師": {"req": 1, "got": 1, "rate": 1}, "_total": {"req": 45, "got": 32, "rate": 0.711111111111111}}, "raw": {"cols": [{"lbl": "時間", "full": "時間戳記", "kind": "time"}, {"lbl": "職類", "full": "職類別", "kind": "cat"}, {"lbl": "Q1", "full": "【醫院執行計畫】 [1. 醫院提供的教學設備與資源(包括軟硬體)都能滿足我的教學所需]", "kind": "likert"}, {"lbl": "Q2", "full": "【醫院執行計畫】 [2. 醫院具充分教學交流平台，供各醫事職類經驗分享]", "kind": "likert"}, {"lbl": "Q3", "full": "【醫院執行計畫】 [3. 我認為醫院支付予我的教學津貼或提供的獎勵措施是合理的]", "kind": "likert"}, {"lbl": "Q4", "full": "【醫院執行計畫】 [4. 我對於訓練課程的相關意見有適切的反映管道]", "kind": "likert"}, {"lbl": "Q5", "full": "【醫院執行計畫】 [5. 我能依據受訓人員學前評估的結果，安排訓練課程]", "kind": "likert"}, {"lbl": "Q6", "full": "【醫院執行計畫】 [6. 我認為學習歷程檔案或學習護照利多於弊，可繼續使用]", "kind": "likert"}, {"lbl": "Q7", "full": "【醫院執行計畫】 [7. 我能運用適當的評估方法評量受訓人員]", "kind": "likert"}, {"lbl": "Q8", "full": "【醫院執行計畫】 [8. 我能在訓練過程適時回饋受訓人員]", "kind": "likert"}, {"lbl": "Q9", "full": "【醫院執行計畫】 [9. 醫院能充分整合或協助各醫事職類執行跨領域團隊合作照護訓練活動]", "kind": "likert"}, {"lbl": "Q10", "full": "【醫院執行計畫】 [10. 醫院能充分協助本單位協調聯合訓練相關事宜]", "kind": "likert"}, {"lbl": "Q11", "full": "【醫院執行計畫】 [11. 醫院制訂的教師教學評估機制適當]", "kind": "likert"}, {"lbl": "Q12", "full": "【醫院執行計畫】 [12. 我能得知自己的教學表現評估結果]", "kind": "likert"}, {"lbl": "Q13", "full": "【醫院執行計畫】 [13. 醫院能將我的教學貢獻與成效反映於升遷或績效考核結果上]", "kind": "likert"}, {"lbl": "Q14", "full": "【師資培育】 [14. 醫院師資培育相關計畫完整、健全]", "kind": "likert"}, {"lbl": "Q15", "full": "【師資培育】 [15. 我常有機會參與師資培育課程]", "kind": "likert"}, {"lbl": "Q16", "full": "【師資培育】 [16. 醫院能補助或提供我參與師資培育課程之資源(如公假、報名費、交通費等)]", "kind": "likert"}, {"lbl": "Q17", "full": "【師資培育】 [17. 參與師資培育課程對我的教學有幫助]", "kind": "likert"}, {"lbl": "Q18", "full": "【教學時間】 [18.我被分派承擔的教學時間合理]", "kind": "likert"}, {"lbl": "Q19", "full": "【受訓人員訓練成效】 [19. 我所指導的受訓人員，訓練課程的執行情況良好]", "kind": "likert"}, {"lbl": "Q20", "full": "【受訓人員訓練成效】 [20. 我所指導的受訓人員，記載學習紀錄成效良好(如學習檢核表、學習手冊、學習護照、學習歷程檔案等)]", "kind": "likert"}, {"lbl": "Q21", "full": "【受訓人員訓練成效】 [21. 我所指導的受訓人員，參與跨領域團隊合作照護訓練之機會足夠]", "kind": "likert"}, {"lbl": "Q22", "full": "【受訓人員訓練成效】 [22. 承上，跨領域團隊合作照護訓練有助於整合各類別醫療專業，達成全人照護的理念及素養]", "kind": "likert"}, {"lbl": "Q23", "full": "【受訓人員訓練成效】 [23. 我所指導的受訓人員，專業知識有提升]", "kind": "likert"}, {"lbl": "Q24", "full": "【受訓人員訓練成效】 [24. 我所指導的受訓人員，臨床實務能力有提升]", "kind": "likert"}, {"lbl": "Q25", "full": "【受訓人員訓練成效】 [25. 我所指導的受訓人員，有正確、良好的臨床專業態度]", "kind": "likert"}, {"lbl": "Q26", "full": "【受訓人員訓練成效】 [26. 如果我是病人，會樂意讓我所指導的受訓人員照護或服務]", "kind": "likert"}, {"lbl": "Q27", "full": "【受訓人員訓練成效】 [27. 我認為我所指導的受訓人員，接受2年期訓練計畫後，確實具備可獨立執行臨床業務的能力]", "kind": "likert"}, {"lbl": "Q28", "full": "【受訓人員訓練成效】 [28. 我所指導的受訓人員，核心能力的訓練成效為]", "kind": "likert"}, {"lbl": "Q29", "full": "【對本計畫看法】 [29. 整體而言，我對醫院執行訓練計畫的評分(最好5分~最差1分；非常滿意５分，非常不滿意１分)]", "kind": "likert"}, {"lbl": "Q30", "full": "【對本計畫看法】 [30. 整體而言，我支持衛生福利部未來能持續推廣與執行本計畫]", "kind": "likert"}, {"lbl": "Q31", "full": "【對本計畫看法】 [31. 我未來樂意繼續擔任教師 (回答「是」之百分比)]", "kind": "likert"}], "rows": [["2026-07-24 16:10", "護理師", 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 4, 4, 4, 4, 4, 5, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4], ["2026-07-24 16:22", "護理師", 4, 4, 3, 4, 4, 2, 3, 5, 4, 4, 3, 4, 4, 4, 4, 4, 4, 4, 4, 3, 4, 4, 3, 3, 4, 4, 4, 4, 3, 3, 3], ["2026-07-24 16:29", "護理師", 4, 4, 4, 4, 5, 5, 5, 5, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 4, 5, 5, 5, 5, 5, 4, 4, 4, 4, 4, 4, 4], ["2026-07-24 16:49", "護理師", 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5], ["2026-07-24 16:51", "護理師", 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5], ["2026-07-24 18:00", "護理師", 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4], ["2026-07-24 18:02", "護理師", 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5], ["2026-07-24 19:53", "護理師", 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5], ["2026-07-24 21:01", "護理師", 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5], ["2026-07-24 21:50", "護理師", 4, 4, 4, 4, 4, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 3, 5], ["2026-07-25 02:45", "護理師", 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4], ["2026-07-25 15:54", "護理師", 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 4, 4, 4], ["2026-07-26 00:18", "護理師", 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5], ["2026-07-27 09:11", "語言治療師", 5, 5, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 4, 4], ["2026-07-27 14:48", "醫事檢驗師", 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 4, 4, 4], ["2026-07-27 15:18", "醫事放射師", 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5], ["2026-07-27 15:27", "醫事放射師", 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4], ["2026-07-29 11:06", "護理師", 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5], ["2026-07-29 12:44", "護理師", 5, 5, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5], ["2026-07-29 15:32", "護理師", 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4], ["2026-07-30 01:24", "護理師", 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4], ["2026-07-30 01:25", "護理師", 4, 4, 2, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4], ["2026-07-30 10:51", "物理治療師", 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5], ["2026-07-30 11:24", "物理治療師", 4, 4, 3, 4, 4, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 3, 4, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4], ["2026-08-02 02:04", "護理師", 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5], ["2026-08-02 12:56", "護理師", 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5], ["2026-08-02 20:04", "護理師", 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5], ["2026-08-02 20:36", "護理師", 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 4], ["2026-08-03 21:53", "護理師", 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5], ["2026-08-05 12:05", "醫事檢驗師", 5, 5, 4, 5, 5, 4, 5, 5, 4, 4, 5, 5, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 4, 4], ["2026-08-05 16:11", "物理治療師", 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4], ["2026-08-06 16:35", "護理師", 5, 5, 5, 5, 4, 4, 4, 4, 4, 5, 4, 4, 4, 5, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5]]}}};
-
-const pct = x => (x*100).toFixed(1)+'%';
-const clr = ['var(--vs)','var(--s)','var(--ok)','var(--ns)','var(--vns)'];
-
-/* ---------- accreditation config ---------- */
-const IND = [
-  {key:'pgy', code:'量性指標 1', title:'受訓人員計畫執行調查', src:'PGY學員問卷',
-   sat:DATA.pgy.overall, rr:DATA.pgy.stu_rr._total, score:20},
-  {key:'tea', code:'量性指標 2', title:'教師計畫執行調查', src:'教師問卷',
-   sat:DATA.tea.overall, rr:DATA.tea.tea_rr._total, score:20},
-];
-const SAT_THR=0.80, RR_THR=0.70;
-
-function gaugeSVG(value, thr, pass){
-  const r=50, c=2*Math.PI*r, off=c*(1-Math.min(value,1));
-  const col = pass ? 'var(--pass)' : 'var(--fail)';
-  return `<svg viewBox="0 0 118 118" width="118" height="118">
-    <circle cx="59" cy="59" r="${r}" fill="none" stroke="#eef1f5" stroke-width="12"/>
-    <circle cx="59" cy="59" r="${r}" fill="none" stroke="${col}" stroke-width="12"
-       stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${off}"
-       transform="rotate(-90 59 59)"/>
-  </svg>`;
-}
-
-function accCard(ind){
-  const satPass = ind.sat>=SAT_THR, rrPass = ind.rr.rate>=RR_THR;
-  const allPass = satPass && rrPass;
-  const badge = ok => ok
-    ? '<span class="badge b-pass">✓ 達標</span>'
-    : '<span class="badge b-fail">✗ 未達</span>';
-  return `<div class="card acc">
-    <div class="tag">${ind.code}　·　${ind.score}分</div>
-    <h3>${ind.title}</h3>
-    <div class="src">資料來源：${ind.src}</div>
-    <div class="metric-row">
-      <div class="metric">
-        <div class="gauge">${gaugeSVG(ind.sat,SAT_THR,satPass)}
-          <div class="val"><div class="num">${pct(ind.sat)}</div><div class="thr">門檻 80%</div></div></div>
-        <div class="lbl">滿意度</div>${badge(satPass)}
-      </div>
-      <div class="metric">
-        <div class="gauge">${gaugeSVG(ind.rr.rate,RR_THR,rrPass)}
-          <div class="val"><div class="num">${pct(ind.rr.rate)}</div><div class="thr">門檻 70%</div></div></div>
-        <div class="lbl">回收率</div>
-        <div class="det">${ind.rr.got} / ${ind.rr.req} 份</div>${badge(rrPass)}
-      </div>
-    </div>
-    <div class="verdict ${allPass?'v-pass':'v-fail'}">
-      <span>${allPass?'✓ 綜合達標':'✗ 綜合未達標'}</span>
-      <span class="score">${allPass?('可得 '+ind.score+' 分'):('回收率不足 · '+ind.score+' 分待補件')}</span>
-    </div>
-  </div>`;
-}
-document.getElementById('accGrid').innerHTML = IND.map(accCard).join('');
-
-/* ---- 分項得分結論（每項獨立達標、獨立計分，比照評分表）---- */
-(function(){
-  const item = ind => {
-    const satOk=ind.sat>=SAT_THR, rrOk=ind.rr.rate>=RR_THR, ok=satOk&&rrOk;
-    let stat, sc;
-    if(ok){ stat='達標'; sc=`${ind.score}<small>／${ind.score} 分</small>`; }
-    else if(satOk && !rrOk){
-      const need=Math.max(0,Math.ceil(ind.rr.req*RR_THR)-ind.rr.got);
-      stat=`未達（回收率 ${pct(ind.rr.rate)}）· 補 ${need} 份可得`; sc=`0<small>／${ind.score} 分</small>`;
-    } else { stat='未達'; sc=`0<small>／${ind.score} 分</small>`; }
-    const who = ind.key==='pgy' ? '受訓人員(學員)' : '教師';
-    return `<div class="concl-item ${ok?'ok':'warn'}">
-       <span class="ico">${ok?'✓':'⚠'}</span>
-       <div><div class="code">${ind.code}　${who}</div><div class="stat">${stat}</div></div>
-       <div class="sc">${sc}</div></div>`;
-  };
-  document.getElementById('scoreBanner').innerHTML = `
-    <div class="concl">
-      <div class="concl-row">${IND.map(item).join('')}</div>
-      <div class="concl-note">※ 各指標獨立達閾值即計分（滿意度 ≥ 80% 且 回收率 ≥ 70%）。此為評分表 100 分中之 2 項，其餘由佐證一致性、量性指標9-B／13-C、質性指標1 等項目計分。</div>
-    </div>`;
-})();
-
-/* ---------- 回收率明細表（學員＋教師一律顯示；達標綠、未達紅附補件） ---------- */
-function rrPanel(rr, who, code){
-  const t = rr._total;
-  const pass = t.rate >= RR_THR;
-  const cats = Object.entries(rr).filter(([k,v])=>k!=='_total' && typeof v.req==='number')
-     .map(([k,v])=>({name:k, req:v.req, got:(typeof v.got==='number'?v.got:0),
-                     rate:(typeof v.rate==='number'?v.rate:0)}));
-  const rows = cats.map(o=>{
-     const miss=o.req-o.got;
-     return `<tr><td>${o.name}</td><td>${o.req}</td><td>${o.got}</td>
-        <td class="${miss>0?'miss':''}">${miss>0?('缺 '+miss):'—'}</td>
-        <td style="color:${o.rate>=RR_THR?'var(--pass)':'var(--fail)'};font-weight:800">${pct(o.rate)}</td></tr>`;
-  }).join('');
-  const need = Math.max(0, Math.ceil(t.req*RR_THR)-t.got);
-  const head = pass
-    ? `<h4 style="color:var(--pass)">✓ ${who}回收率明細（${code}）</h4>
-       <p>回收 <b>${t.got} / ${t.req}</b> 份（<b style="color:var(--pass)">${pct(t.rate)}</b>），已達 70% 門檻、達標。</p>`
-    : `<h4>⚠ ${who}回收率明細（${code}）· 未達門檻</h4>
-       <p>回收 <b>${t.got} / ${t.req}</b> 份（<b class="big">${pct(t.rate)}</b>），未達 70% 門檻，尚需再補 <span class="big">${need} 份</span>即可達標。</p>`;
-  return `<div class="action ${pass?'rr-ok':''}">
-     ${head}
-     <table class="gap-tbl">
-       <tr><th>職類</th><th>應填</th><th>已填</th><th>未填</th><th>回收率</th></tr>
-       ${rows}
-       <tr style="font-weight:800;background:${pass?'#eafaf1':'#fdeeee'}"><td>合計</td><td>${t.req}</td><td>${t.got}</td>
-          <td>${t.req-t.got}</td><td style="color:${pass?'var(--pass)':'var(--fail)'}">${pct(t.rate)}</td></tr>
-     </table>
-   </div>`;
-}
-document.getElementById('rrStuPanel').innerHTML = rrPanel(DATA.pgy.stu_rr, '受訓人員（PGY學員）', '量性指標1');
-document.getElementById('actionPanel').innerHTML = rrPanel(DATA.tea.tea_rr, '教師', '量性指標2');
-
-/* ---------- radar ---------- */
-function radarSVG(dims){
-  const N=dims.length, cx=220, cy=158, R=104, base=0.75; // scale 75%~100%
-  const ang = i => -Math.PI/2 + i*2*Math.PI/N;
-  const rr = v => R*((v-base)/(1-base));
-  let grid='';
-  [0.25,0.5,0.75,1].forEach(g=>{
-    let pts=dims.map((_,i)=>{const a=ang(i),r=R*g;return (cx+r*Math.cos(a))+','+(cy+r*Math.sin(a));}).join(' ');
-    grid+=`<polygon points="${pts}" fill="none" stroke="#e2e6ed" stroke-width="1"/>`;
-  });
-  let axes='',labels='';
-  dims.forEach((d,i)=>{
-    const a=ang(i), x=cx+R*Math.cos(a), y=cy+R*Math.sin(a);
-    axes+=`<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="#e2e6ed"/>`;
-    const co=Math.cos(a), si=Math.sin(a);
-    const lx=cx+(R+16)*co, ly=cy+(R+16)*si;
-    const anchor = Math.abs(co)<0.25?'middle':(co>0?'start':'end');
-    const dy = si<-0.4?-3:(si>0.4?11:4);
-    labels+=`<text x="${lx}" y="${ly+dy}" font-size="12" fill="var(--ink2)" font-weight="700"
-       text-anchor="${anchor}" dominant-baseline="middle">${d.name}</text>
-       <text x="${lx}" y="${ly+dy+14}" font-size="10.5" fill="var(--accent)" font-weight="700"
-       text-anchor="${anchor}" dominant-baseline="middle">${(d.sat*100).toFixed(1)}%</text>`;
-  });
-  let dpts=dims.map((d,i)=>{const a=ang(i),r=Math.max(6,rr(d.sat));return (cx+r*Math.cos(a))+','+(cy+r*Math.sin(a));}).join(' ');
-  let dots=dims.map((d,i)=>{const a=ang(i),r=Math.max(6,rr(d.sat));return `<circle cx="${cx+r*Math.cos(a)}" cy="${cy+r*Math.sin(a)}" r="3" fill="var(--accent)"/>`;}).join('');
-  return `<svg viewBox="0 0 440 350" width="100%" style="max-width:440px;display:block;margin:0 auto">
-    ${grid}${axes}
-    <polygon points="${dpts}" fill="rgba(43,108,176,.16)" stroke="var(--accent)" stroke-width="2"/>
-    ${dots}${labels}
-    <text x="${cx}" y="${cy+R+40}" font-size="10" fill="var(--muted)" text-anchor="middle">刻度：中心 75% → 外圈 100%</text>
-  </svg>`;
-}
-
-/* ---------- render one survey pane ---------- */
-function renderPane(key){
-  const d = DATA[key];
-  const rr = key==='pgy' ? d.stu_rr : d.tea_rr;
-  const respondents = rr._total.got;
-  const kpis = `<div class="kpis">
-     <div class="card kpi hl"><div class="n">${pct(d.overall)}</div><div class="k">總體滿意度</div></div>
-     <div class="card kpi"><div class="n">${pct(rr._total.rate)}</div><div class="k">回收率</div></div>
-     <div class="card kpi"><div class="n">${rr._total.got}<span style="font-size:1rem;color:var(--muted)">/${rr._total.req}</span></div><div class="k">填答 / 應填人數</div></div>
-     <div class="card kpi"><div class="n">${d.questions.length}</div><div class="k">題項數</div></div>
-   </div>`;
-
-  const dimBand = d.dims.map(dm=>`<div class="dim">
-     <div class="top"><span>${dm.name}</span><span>${pct(dm.sat)}</span></div>
-     <div class="track"><div class="fill" style="width:${dm.sat*100}%"></div><div class="thrline"></div></div>
-   </div>`).join('');
-
-  const radar = `<div class="card panel"><h4>各構面滿意度 · 雷達圖</h4>${radarSVG(d.dims)}</div>`;
-  const bandPanel = `<div class="card panel"><h4>各構面滿意度（紅線為 80% 門檻）</h4>${dimBand}</div>`;
-
-  const legend = `<div class="legend">
-    <span><i style="background:var(--vs)"></i>非常滿意</span>
-    <span><i style="background:var(--s)"></i>滿意</span>
-    <span><i style="background:var(--ok)"></i>尚可</span>
-    <span><i style="background:var(--ns)"></i>不滿意</span>
-    <span><i style="background:var(--vns)"></i>非常不滿意</span></div>`;
-
-  const qlist = d.questions.map((q,i)=>{
-    const tot=q.total||1;
-    const seg=[q.vs,q.s,q.ok,q.ns,q.vns].map((c,j)=>
-      `<span style="width:${c/tot*100}%;background:${clr[j]}"></span>`).join('');
-    const low = q.sat<0.8;
-    return `<div class="q">
-      <div class="qtop"><span class="qtxt">${i+1}. ${q.q}</span>
-        <span class="qsat" style="color:${low?'var(--fail)':'var(--vs)'}">${pct(q.sat)}</span></div>
-      <div class="stack">${seg}</div></div>`;
-  }).join('');
-  const qPanel = `<div class="card panel"><h4>逐題滿意度與作答分布</h4>${legend}${qlist}</div>`;
-
-  // job categories
-  const jcats = Object.entries(rr).filter(([k,v])=>k!=='_total' && typeof v.req==='number')
-    .map(([k,v])=>({name:k, req:v.req, got:(typeof v.got==='number'?v.got:0),
-                    rate:(typeof v.rate==='number'?v.rate:0)}));
-  const jc = jcats.map(o=>{
-    const pass=o.rate>=RR_THR;
-    return `<div class="jc"><div class="jtop">
-       <span class="jname">${o.name} <span style="color:var(--muted);font-weight:400">(${o.got}/${o.req})</span></span>
-       <span class="jrate" style="color:${pass?'var(--vs)':'var(--fail)'}">${pct(o.rate)}</span></div>
-       <div class="track"><div class="fill" style="width:${o.rate*100}%;background:${pass?'var(--vs)':'var(--ns)'}"></div><div class="thrline"></div></div>
-     </div>`;}).join('');
-  const jcTotal = `<div class="jc" style="margin-top:12px;padding-top:12px;border-top:1px dashed var(--line)">
-     <div class="jtop"><span class="jname" style="font-weight:800">合計</span>
-       <span class="jrate" style="color:${rr._total.rate>=RR_THR?'var(--vs)':'var(--fail)'}">${pct(rr._total.rate)} (${rr._total.got}/${rr._total.req})</span></div></div>`;
-  const jcPanel = `<div class="card panel"><h4>各職類填答分布（灰線為 70% 門檻）</h4>${jc}${jcTotal}</div>`;
-
-  // 需關注題項（滿意度最低 3 題）
-  const low3 = [...d.questions].sort((a,b)=>a.sat-b.sat).slice(0,3);
-  const attColor = v => v<0.8 ? 'var(--fail)' : (v<0.9 ? '#c9820a' : 'var(--vs)');
-  const attBg   = v => v<0.8 ? 'var(--failbg)' : (v<0.9 ? '#fbeecb' : 'var(--passbg)');
-  const attention = `<div class="attention">
-     <h4>需關注題項（滿意度最低 3 題）</h4>
-     ${low3.map(q=>`<div class="att-row">
-        <span class="pctb" style="color:${attColor(q.sat)};background:${attBg(q.sat)}">${pct(q.sat)}</span>
-        <span class="qn">${q.q}</span></div>`).join('')}
-   </div>`;
-
-  // 質性意見（僅有文字建議欄時；資料驅動，明年有內容自動列出）
-  let qual = '';
-  const raw = d.raw, tIdx = raw.cols.findIndex(c=>c.kind==='text');
-  if(tIdx>=0){
-    const cIdx = raw.cols.findIndex(c=>c.kind==='cat');
-    const skip = new Set(['','無','沒有','沒','無。','無意見','n/a','na','none','.','。','-','－']);
-    const items = raw.rows.map(r=>({who:cIdx>=0?(r[cIdx]||''):'', t:String(r[tIdx]||'').trim()}))
-       .filter(o=>{
-         const tt=o.t.toLowerCase();
-         if(skip.has(tt)) return false;
-         // 去除純標點／純表情：至少要有 2 個中日文字或英數
-         const real=(o.t.match(/[\u4e00-\u9fffA-Za-z0-9]/g)||[]).length;
-         return real>=2;
-       });
-    const body = items.length
-      ? items.map(o=>`<div class="qitem"><span class="who">${o.who}</span>${o.t.replace(/</g,'&lt;')}</div>`).join('')
-      : `<div class="empty">本年度學員未填寫實質文字建議（作答皆為「無／沒有」）。若日後有具體建議，此區會自動列出。</div>`;
-    qual = `<div class="card panel qual" style="margin-top:18px">
-       <h4>學員文字建議（質性意見）</h4>${body}</div>`;
-  }
-
-  return kpis + attention
-    + `<div class="two" style="margin-top:18px">${radar}${bandPanel}</div>`
-    + `<div class="two" style="margin-top:18px">${qPanel}${jcPanel}</div>`
-    + qual;
-}
-
-/* ---------- rules pane (第三張圖：評分表) ---------- */
-function statusPill(ind){
-  const ok = ind.sat>=SAT_THR && ind.rr.rate>=RR_THR;
-  return `<span class="st-pill ${ok?'st-pass':'st-fail'}">${ok?'✓ 本院達標':'✗ 回收率未達'}</span>`;
-}
-function renderRules(){
-  const p=IND[0], t=IND[1];
-  return `<div class="card panel">
-    <h4>列入獎勵費用核算之指標項目</h4>
-    <table class="rule-tbl">
-      <tr><th style="text-align:left">指標項目</th><th>閾值</th><th>分數</th></tr>
-      <tr><td colspan="2">量性指標佐證資料內容與系統填報值，經評核後<b style="color:var(--accent)">一致且不需補件</b>者</td><td class="sc">20</td></tr>
-      <tr class="mine"><td><span class="code">量性指標1</span>　受訓人員計畫執行調查 ${statusPill(p)}</td>
-          <td class="thr">滿意度 80%<br>回收率 70%</td><td class="sc">20</td></tr>
-      <tr class="mine"><td><span class="code">量性指標2</span>　教師計畫執行調查 ${statusPill(t)}</td>
-          <td class="thr">滿意度 80%<br>回收率 70%</td><td class="sc">20</td></tr>
-      <tr><td><span class="code">量性指標9-B</span>　醫院使用於其他醫事人員之「教學師資補助費」，佔補助經費之比率</td>
-          <td class="thr">投入費用達補助<br>經費之 50%</td><td class="sc">15</td></tr>
-      <tr><td><span class="code">量性指標13-C</span>　新進具有補助資格之醫師及醫事人員且接受訓練計畫之比率</td>
-          <td class="thr">全院接受訓練計畫<br>之比率達 85%</td><td class="sc">15</td></tr>
-      <tr><td><span class="code">質性指標1</span>　落實能力導向醫學教育執行情形（註）</td>
-          <td class="thr">－</td><td class="sc">10</td></tr>
-      <tr class="total"><td colspan="2">總計</td><td class="sc">100</td></tr>
-    </table>
-    <div class="rule-note">
-      <b>註：</b>質性指標1得分依據評分基準、各職類執行摘要說明及相關佐證資料，評核指標等級為
-      <b>A、B、C 三等級</b>，分數分別為 <b>10 分、6 分、3 分</b>。
-    </div>
-    <div class="rule-principle">
-      <b>指標評分基準與原則：</b><br>
-      醫院須先符合獎勵門檻後，上述量性指標亦達閾值即可得分。<br>
-      各指標閾值達成情形將由系統輔助判斷，佐證資料完整度與合適性則另由專家進行評核，綜整兩項結果再計分。
-    </div>
-    <div class="rule-note" style="margin-top:16px">
-      <b>對照本院現況：</b>量性指標1（學員）滿意度 ${pct(p.sat)}、回收率 ${pct(p.rr.rate)} — 兩項達標；
-      量性指標2（教師）滿意度 ${pct(t.sat)} 達標，但回收率 ${pct(t.rr.rate)} 未達 70% 門檻，
-      尚需再催回 ${Math.max(0,Math.ceil(t.rr.req*RR_THR)-t.rr.got)} 份即可計分。
-    </div>
-  </div>`;
-}
-
-/* ---------- detail (raw form responses) ---------- */
-const LK = { // value -> {bg,fg,txt}
-  5:{bg:'rgba(31,157,97,.88)',fg:'#fff',t:'非常滿意'},
-  4:{bg:'rgba(131,201,141,.55)',fg:'#173d24',t:'滿意'},
-  3:{bg:'rgba(243,193,75,.55)',fg:'#5a4708',t:'尚可'},
-  2:{bg:'rgba(236,138,86,.62)',fg:'#5a2c10',t:'不滿意'},
-  1:{bg:'rgba(217,83,79,.88)',fg:'#fff',t:'非常不滿意'},
+/* ================= 設定（TODO 部署後填 / 可改） ================= */
+const CONFIG = {
+  GAS_URL:      "https://script.google.com/macros/s/AKfycbxsenshI8pcVGJa9EwgP-EHkhFGKQji8AxqU9WrEOykJQyytpZG8ag_HHfiaQXrnBQVbw/exec",                 // ← 你的 Apps Script /exec 網址（已填入）
+  DEADLINE_STR: "2026/08/09 00:00:00 GMT+0800",// 截止＝8/7 當日 24:00（8/8 00:00 關閉）
+  ADMIN_TOKEN:  "cchm-edu-2026",               // 承辦人後台通行碼（與後端一致）；開 ?admin=此碼 進後台
+  REPORT_TITLE: "115年度醫院評鑑及教學醫院評鑑不定時及即時追蹤輔導訪查",  // ★請確認年度字樣
 };
-function renderDetail(key){
-  const raw = DATA[key].raw;
-  const cols = raw.cols;
-  const catIdx = cols.findIndex(c=>c.kind==='cat');
-  const head = '<tr><th class="sticky">序</th>' + cols.map(c=>
-      `<th data-full="${c.full.replace(/"/g,'&quot;')}">${c.lbl}</th>`).join('') + '</tr>';
-  const body = raw.rows.map((row,ri)=>{
-    let tds = `<td class="sticky">${ri+1}</td>`;
-    row.forEach((v,ci)=>{
-      const kind = cols[ci].kind;
-      if(kind==='likert' && LK[v]){
-        const m=LK[v];
-        tds += `<td class="cell" style="background:${m.bg};color:${m.fg}" data-full="${m.t}">${v}</td>`;
-      } else if(kind==='time'){
-        tds += `<td class="timecol">${v||''}</td>`;
-      } else if(kind==='cat'){
-        tds += `<td class="catcol">${v||''}</td>`;
-      } else if(kind==='text'){
-        tds += `<td class="textcol">${(v||'').replace(/</g,'&lt;')||'—'}</td>`;
-      } else {
-        tds += `<td>${v===''||v==null?'—':v}</td>`;
-      }
+const ITEMS = [{"id": "r5", "tiao": "1.1.2", "section": "建議事項", "opinion": "建議貴院宜增設牙科專屬會議室及教學空間。", "due": "116/5", "roles": [{"role": "牙醫師", "prefill": "於院方會議提出增設牙科專屬會議室及教學空間需求，並配合院方未來空間規劃辦理。"}]}, {"id": "r6", "tiao": "1.1.3", "section": "建議事項", "opinion": "建議貴院內科住院醫師及其他職類之學習歷程，宜有統一之電子學習登錄糸統。", "due": "116/5", "roles": [{"role": "醫師", "prefill": "1.醫師：已開始著手建置內科住院醫師電子學習歷程供內科住院醫師使用。"}, {"role": "牙醫師", "prefill": "2.牙醫師：已建置電子學習歷程供訓練醫師使用。"}, {"role": "藥師", "prefill": "3.藥事：已開始逐步架構E-Portfolio電子學習歷程：如測驗表單及課程架構，UGY部分已完成建置供學員使用，PGY部分已逐步建置，預定114年12月完成。"}, {"role": "醫事放射", "prefill": "4.醫事放射：已於112年教學評鑑前建置完整電子學習歷程供PGY學員訓練使用。"}, {"role": "醫事檢驗", "prefill": "5.醫事檢驗：E-Portfolio系統學習，於114年1月9日派二名醫檢師至永康臨床病理部及114年5月13日三名參與教研組舉辦「E-Portfolio學習歷程建置及使用心得分享」，現陸續將學員表單、考核等相關資料存放系統內。"}, {"role": "護理", "prefill": "6.護理：已於112年1月使用電子學習歷程供PGY學員訓練使用。"}, {"role": "營養", "prefill": "7. 營養：(1)113年起建置E-Portfolio電子學習歷程架構，並適時與教學討論會議做滾動式調整。\n    (2)113年07月01日至09月16日及114年6月24日至9月5日，收訓長榮大學與中國醫藥大學暑期實習生各1名，其學習歷程採本院E-Protfolio系統建置並與實習生計畫書及學習評量紀錄手冊同步執行作業。"}, {"role": "呼吸治療", "prefill": "8.呼吸治療：113年新進人員已開始使用電子學習歷程進行學習、測試及回饋。"}, {"role": "物理治療", "prefill": "9.物理治療：已著手建置學員電子學習歷程：如電子化教學檔案與成效評核，114年起PGY學員陸續使用中。"}, {"role": "職能治療", "prefill": "10.職能治療：已著手建置學員電子學習歷程：如電子化教學檔案與成效評核。"}, {"role": "語言治療", "prefill": "11.語言治療：將逐步規劃建置學員電子學習歷程。"}]}, {"id": "r7", "tiao": "1.3.1", "section": "建議事項", "opinion": "1.貴院宜擴增營養職類之使用空間，以兼顧學習便利性。\n2.貴院呼吸治療職類若日後收訓學生，宜提供獨立之學生使用空間。", "due": "116/5", "roles": [{"role": "營養", "prefill": "1.營養：於院方會議提出擴增營養教學使用空間需求，並配合院方未來規劃辦理。"}, {"role": "呼吸治療", "prefill": "2.呼吸治療：逐步規劃收訓學生之空間需求，並配合院方規劃辦理。"}]}, {"id": "r8", "tiao": "1.3.6", "section": "建議事項", "opinion": "貴院宜提供模擬訓練教室，供全院醫療人員使用，以增加學習便利性。", "due": "116/5", "roles": [{"role": "教學研究組", "prefill": "1.本院目前有提供模擬訓練教室供全院醫療人員使用，惟與會議室為共用空間。\n2.未來將配合院方發展空間規劃，提供更合適與獨立之模擬訓練教室供人員訓練使用。"}]}, {"id": "r10", "tiao": "4.2.1", "section": "建議事項", "opinion": "建議貴院針對醫事放射或其他職類宜由醫師協助，就職類之臨床資料進行蒐集，進一步執行研究計畫與期刊發表。", "due": "116/5", "roles": [{"role": "醫事放射", "prefill": "1.醫事放射：將與神經外科醫師合作關於脊椎研究計畫。"}, {"role": "藥師", "prefill": "2.藥師：已與胸腔科醫師合作完成以「吸入型類固醇對COPD患者造成骨質疏鬆之可能」為主題之研究，114年已完成發表。"}, {"role": "醫事檢驗", "prefill": "3.醫事檢驗：現今檢驗科編制無醫師在單位內，規劃與相關疾病的檢驗結果統計並提出計畫方案與可行性。盡可能滿足跨單位共同照護之研究方向，依計畫執行成效追蹤。目前檢驗科配合感染管制組計畫，提供每月血液培養污染率報表。"}, {"role": "護理", "prefill": "4.護理：護理職類持續研究計畫及期刊發表，持續追蹤中。"}, {"role": "營養", "prefill": "5.營養：本科擬培訓臨床教師學術研究計畫之申請資格，預計115年與醫師、醫事相關單位合作，共同提出院內全人研究計畫。"}, {"role": "呼吸治療", "prefill": "6.呼吸治療：單位持續有申請與醫師合作之院內全人或專題研究計畫，並有海報論文及期刊之發表。"}, {"role": "物理治療", "prefill": "7.物理治療：(1) 113年度物理治療已有與醫師合作之專題研究1案及全人研究1案並執行中。(2)期刊發表一篇(第一作者)，醫療品質雜誌 2023,12 ( 第十二卷 , 第一期 )，題目：提升急性後期照護居家模式之收案率。\n    113年起與復健科醫師合作研究專案，主題：「神經電刺激應用於腦中風病人吞嚥及運動功能之成效」，後續研究進行中。"}, {"role": "職能治療", "prefill": "8.職能治療：114年度職能治療已有與醫師合作之研究案1件。共同蒐集臨床資料，進一步執行研究計畫與發表。"}, {"role": "語言治療", "prefill": "9.語言治療：已與醫師共同合作1篇研究，並於台灣復健醫學會114年度會員大會暨聯合學術研討會發表。"}]}, {"id": "r16", "tiao": "6.1.4", "section": "建議事項", "opinion": "1.建議貴院之評量資料宜進一步使用數據化分析並以PDCA方式進行改善。\n2.建議貴院針對學習不佳之學員或教學不佳者，宜有共同單位（如：醫教會等）協助處理。", "due": "115/2", "roles": [{"role": "醫事檢驗", "prefill": "1.113年度未有醫技學生來院實習，今年度將有一名二技學生至本院實習，規劃訓練實習時程，並安排實習導師於學員在院期間的學習及生活狀況追蹤輔導，訂有期中及期末座談會評核學員學習成效，缺失則以PDCA進行補強改善機制。\n依委員建議，評量資料使用數據化分析並以PDCA方式進行改善。(1)檢驗科制訂「醫技系學生訓練作業程序」(CCH.LAB.QP-1602)，明訂實習學生評量方法。(2)以學生為中心之教學策略，依據評核結果進行成果檢視，不符合規範即進行調整改善，並有表單文件紀錄。\n2.針對學習不佳學員及教學不佳教師，需填寫「佳里奇美醫院檢驗科補強訓練輔導機制紀錄表」(QR160206)，單位主管進行學習不佳之學員或教師面談了解教學不佳之原因與分析，結果再呈報教學中心協助處理。"}]}, {"id": "r17", "tiao": "6.2.1", "section": "建議事項", "opinion": "1.建議貴院針對臨床單位宜培訓種子教師，以更符合需求。\n2.建議貴院宜將全人教育應用於臨床作業。", "due": "115/2", "roles": [{"role": "醫事檢驗", "prefill": "1.檢驗科將專業課程派任醫檢師參加訓練於114年7月1日~2日由二名醫檢師參加疾管署辦理「114年度人體寄生蟲鏡檢」研習會，並通過考核。回院將在科會議分享並擔任種子教師。\n2.定期規劃全人教育課程，如服務禮儀等納入訓練課程中，以利人員實際應用於臨床作業中。"}]}, {"id": "r18", "tiao": "6.2.4", "section": "建議事項", "opinion": "貴院之評量資料宜進一步使用數據化分析，並以PDCA方式進行改善。", "due": "114/12", "roles": [{"role": "醫事檢驗", "prefill": "1.檢驗科以學習者為中心分別編排學習訓練課程，醫檢師亦由外部能力試驗評估能力，未達合格或缺失則導入不符合事項改善，以PDCA進行缺失改善，於114年醫檢學會第一次體液尿液沉渣測試，正確率93.75%(14/16)有二題不合格，則導入編號11412不符合事項矯正改善。"}]}, {"id": "r21", "tiao": "6.2.3", "section": "建議事項", "opinion": "建議貴院宜採用目前台灣營養學會已有之「可信賴的專業活動」項目及評估方式，較能客觀評估個別學員及修正學習方式，以提升其學習成果。", "due": "114/10", "roles": [{"role": "營養", "prefill": "已於113年08月07日三院區營養科會議討論並決議事項:\n    1.將運用營養師公會全聯會共同擬訂112年08月01日公告內容，為「2022年台灣新進營養師可信賴專業活動(EPAs)」第一版，各專業領域進行信賴區間等級評核，三院區評分標準需有明確一致性，評核方法及評核標準參考台灣膳食雜誌期刊及醫療品質雜誌17卷3期(2023/05)Pp.50-58，建置台灣教學醫院新進營養師可信賴專業活動。\n    2.三院區營養科共同成立臨床能力委員會(CCC)-(1)固定參與成員，安排執行教師或營養師共同參與，以增加相關議題客觀性及執行性。(2)未來考量參與者時間，除實體會議，搭配線上會議增加執行彈性。\n1141114年執行內容：\n1.「PGY教學計劃書」修訂版:將運用營養師公會全聯會共同擬訂113年12月31日公告內容，為「2024年台灣新進營養師可信賴專業活動(EPAs)」第二版為依據修訂之。"}]}, {"id": "r22", "tiao": "6.2.4", "section": "建議事項", "opinion": "建議貴院宜進一步分析教學活動之成效，如：使用PDCA之架構。", "due": "114/10", "roles": [{"role": "營養", "prefill": "採用EPAs評估方式進行教學活動成效分析：\n1. 111年04月李姿穎營養師到職，已於112年05月至永康總院聯合訓練，其課程為各式 ICU重症住院病患營養醫療照護(篩檢、評估、計畫與執行)，受訓期間為4天上午時段，評核方式採EPAs並通過考核，於112年07月考取加護病房營養師認證。\n2. 李姿穎營養師於113年12月接受三院區「營養師專業能力進階認定管理程序書」D2進階考核制度，並於114年元月份起生效。"}]}, {"id": "r25", "tiao": "綜合意見1", "section": "綜合意見", "opinion": "建議貴院藥事、醫事放射及醫事檢驗等職類之新進人員學習歷程，宜逐步電子化。", "due": "114/12", "roles": [{"role": "藥師", "prefill": "已開始逐步架構E-Portfolio電子學習歷程：如測驗表單及課程架構，UGY部分已完成建置供學員使用，PGY部分已逐步建置，預定114年12月完成。"}, {"role": "醫事放射", "prefill": "已於112年教學評鑑前建置完整E-Portfolio電子學習歷程，並提供PGY學員使用中。"}, {"role": "醫事檢驗", "prefill": "E-Portfolio系統學習，於114年1月9日派二名醫檢師至永康臨床病理部及114年5月13日三名參與教研組舉辦「E-Portfolio學習歷程建置及使用心得分享」，現陸續將學員表單、考核等相關資料存放系統內。"}]}, {"id": "r27", "tiao": "綜合意見3", "section": "綜合意見", "opinion": "建議貴院物理治療、職能治療等職類之教學、研究及臨床治療宜持續提供優質全人醫療照護服務與臨床空間，吸引實習學生與優秀新進人員來院學習訓練。", "due": "116/5", "roles": [{"role": "物理治療", "prefill": "1. 物理治療：物理治療持續參與跨領域團隊全人照護，鼓勵教師接受訓練，精進本質學能。112年10月至113年9月派訓院外教育訓練合計23人次。113年9月物理治療PGY開訓1人。114年物理治療PGY開訓2人。"}, {"role": "職能治療", "prefill": "2.職能治療：職能治療提供優質全人醫療照護服務與臨床空間：(1)今年完成採購生物回饋電刺激，運用於臨床病人治療。(2)擬規劃新空間，增加復健科新空間，強化PAC及兒聯評業務特色。(3)共2位參加114年全人照護教育師培工作訪訓練。"}, {"role": "語言治療", "prefill": "3.語言治療：持續與跨領域團隊合作，提供優質全人醫療照護服務。例如：PAC照護、小兒發展聯合評估等，並爭取更合宜臨床訓練設施與教學空間。"}]}];
+const ROLE_ORDER = ["醫師", "牙醫師", "藥師", "醫事放射", "醫事檢驗", "護理", "營養", "呼吸治療", "物理治療", "職能治療", "語言治療", "教學研究組"];
+
+/* ================= 共用 ================= */
+const $ = s => document.querySelector(s);
+document.getElementById('deadlineTxt').innerText = "民國115年8月8日";
+function jsonp(extra){
+  return new Promise((res,rej)=>{
+    const cb='gas_'+Date.now()+'_'+Math.floor(Math.random()*1e4);
+    let tm=null; const s=document.createElement('script');
+    function clean(){ if(tm)clearTimeout(tm); delete window[cb]; if(s.parentNode)s.parentNode.removeChild(s); }
+    window[cb]=d=>{clean();res(d);};
+    s.src=CONFIG.GAS_URL+'?callback='+cb+(extra?('&'+extra):'');
+    s.onerror=()=>{clean();rej(new Error('連線失敗'));};
+    document.body.appendChild(s);
+    tm=setTimeout(()=>{clean();rej(new Error('連線逾時'));},12000);
+  });
+}
+function isClosed(){ return new Date() >= new Date(CONFIG.DEADLINE_STR); }
+function esc(t){ return (t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+/* ================= 填報畫面 ================= */
+const roleSel=$('#roleSel');
+ROLE_ORDER.forEach(r=>{
+  // 只列出實際有條號的職類
+  if(ITEMS.some(it=>it.roles.some(x=>x.role===r))){
+    const o=document.createElement('option'); o.value=r; o.textContent=r; roleSel.appendChild(o);
+  }
+});
+$('#pageTitle') && ($('#pageTitle').innerText = CONFIG.REPORT_TITLE.replace(/^\d+年度/,'') || $('#pageTitle').innerText);
+
+let currentRole="";
+roleSel.addEventListener('change', async ()=>{
+  currentRole=roleSel.value;
+  if(!currentRole){ $('#cards').innerHTML=''; $('#hintPick').classList.remove('hidden'); $('#actionBar').classList.add('hidden'); return; }
+  $('#hintPick').classList.add('hidden');
+  $('#cards').innerHTML='<div class="text-center text-slate-500 py-6"><i class="fa-solid fa-spinner fa-spin mr-2"></i>載入您的條號中…</div>';
+  let saved={};
+  try{ const r=await jsonp('action=load&role='+encodeURIComponent(currentRole)); if(r&&r.result==='load'){ (r.rows||[]).forEach(row=>saved[row.itemId]=row); if(r.filler)$('#filler').value=r.filler; if(r.ext)$('#ext').value=r.ext; if(r.email)$('#email').value=r.email; } }catch(e){}
+  renderCards(currentRole, saved);
+});
+
+function myItems(role){ return ITEMS.filter(it=>it.roles.some(x=>x.role===role)); }
+function myPrefill(it,role){ const seg=it.roles.find(x=>x.role===role); return seg?seg.prefill:''; }
+
+function renderCards(role, saved){
+  const list=myItems(role);
+  const closed=isClosed();
+  $('#cards').innerHTML = list.map(it=>{
+    const s = saved[it.id] || {};
+    const content = (s.content!=null && s.content!=='') ? s.content : myPrefill(it,role);
+    const status  = s.status || '執行中';
+    const due     = (s.due!=null && s.due!=='') ? s.due : it.due;
+    const secBadge = it.section==='綜合意見'
+      ? '<span class="badge bg-purple-500/20 text-purple-300">綜合意見</span>'
+      : '<span class="badge bg-sky-500/20 text-sky-300">建議事項</span>';
+    const filledMark = saved[it.id] ? '<span class="badge bg-emerald-500/20 text-emerald-300"><i class="fa-solid fa-check"></i>已填報</span>' : '';
+    const fromSaved = !!saved[it.id];
+    const sourceHint = fromSaved ? '已帶入您本輪填報內容，可再修改' : '已帶入上次（前一輪）填報內容，請更新';
+    return `
+    <div class="glass-card rounded-2xl p-5 sm:p-6" data-id="${it.id}">
+      <div class="flex flex-wrap items-center gap-2 mb-3">
+        <span class="badge bg-white/10 text-white text-base">條號 ${esc(it.tiao)}</span>
+        ${secBadge} ${filledMark}
+      </div>
+      <div class="mb-4">
+        <div class="text-xs text-slate-400 mb-1">委員評量意見</div>
+        <div class="text-slate-200 text-sm bg-slate-900/40 rounded-lg p-3 leading-relaxed">${esc(it.opinion)}</div>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+        <div>
+          <label class="block text-xs text-slate-400 mb-1">執行狀況</label>
+          <select class="fld f-status">
+            <option ${status==='已完成'?'selected':''}>已完成</option>
+            <option ${status==='執行中'?'selected':''}>執行中</option>
+            <option ${status==='未執行'?'selected':''}>未執行</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs text-slate-400 mb-1">預定完成年月 <span class="text-slate-500 f-due-note">(已完成免填)</span></label>
+          <div class="flex gap-2 items-center flex-wrap">
+            <input class="fld f-due" value="${esc(due)}" placeholder="例：116/5" style="max-width:8rem">
+            <input type="month" class="fld f-due-pick" style="max-width:11rem;color-scheme:dark" title="點日曆選年月，會自動換算為民國年/月">
+          </div>
+          <p class="text-[11px] text-slate-500 mt-1"><i class="fa-regular fa-calendar-days mr-1"></i>可直接打字，或按右側日曆選擇（西元→自動換民國）</p>
+        </div>
+      </div>
+      <div>
+        <div class="flex flex-wrap items-center gap-2 mb-1">
+          <label class="text-xs text-slate-400">目前執行情形（或尚未執行理由）</label>
+          <span class="badge bg-sky-500/15 text-sky-300" style="font-size:11px"><i class="fa-solid fa-clock-rotate-left"></i>${sourceHint}</span>
+        </div>
+        <textarea class="fld f-content">${esc(content)}</textarea>
+      </div>
+    </div>`;
+  }).join('');
+  $('#actionBar').classList.toggle('hidden', list.length===0);
+  if(closed){ $('#submitBtn').disabled=true; $('#submitBtn').innerHTML='<i class="fa-solid fa-lock mr-2"></i>填報已截止'; }
+  initCardStates();
+}
+
+/* ---- 預定完成年月：民國↔西元 換算、日曆同步、已完成免填 ---- */
+function rocToMonthInput(roc){
+  const m=(roc||'').toString().match(/^\s*(\d{2,3})\s*[\/\-\.]\s*(\d{1,2})\s*$/);
+  if(!m) return '';
+  const y=parseInt(m[1],10)+1911, mo=('0'+parseInt(m[2],10)).slice(-2);
+  return y+'-'+mo;
+}
+function monthInputToRoc(val){
+  const m=(val||'').match(/^(\d{4})-(\d{2})$/); if(!m) return '';
+  return (parseInt(m[1],10)-1911)+'/'+parseInt(m[2],10);
+}
+function applyDoneState(card){
+  const done = card.querySelector('.f-status').value==='已完成';
+  const due=card.querySelector('.f-due'), pick=card.querySelector('.f-due-pick'), note=card.querySelector('.f-due-note');
+  due.disabled=done; pick.disabled=done;
+  due.classList.toggle('opacity-40',done); pick.classList.toggle('opacity-40',done);
+  note.textContent = done ? '(已完成免填)' : '';
+  note.classList.toggle('text-emerald-400',done);
+}
+function initCardStates(){
+  document.querySelectorAll('#cards [data-id]').forEach(card=>{
+    const pick=card.querySelector('.f-due-pick'), due=card.querySelector('.f-due');
+    if(pick&&due) pick.value=rocToMonthInput(due.value);
+    applyDoneState(card);
+  });
+}
+/* 事件委派（#cards 常駐，掛一次即可） */
+$('#cards').addEventListener('change', e=>{
+  const card=e.target.closest('[data-id]'); if(!card) return;
+  if(e.target.classList.contains('f-due-pick')){ const roc=monthInputToRoc(e.target.value); if(roc) card.querySelector('.f-due').value=roc; }
+  if(e.target.classList.contains('f-status')) applyDoneState(card);
+});
+$('#cards').addEventListener('input', e=>{
+  if(e.target.classList.contains('f-due')){ const card=e.target.closest('[data-id]'); const pick=card.querySelector('.f-due-pick'); const mi=rocToMonthInput(e.target.value); if(mi&&pick) pick.value=mi; }
+});
+
+function collectPayload(){
+  const items=[];
+  document.querySelectorAll('#cards [data-id]').forEach(card=>{
+    const id=card.getAttribute('data-id');
+    const it=ITEMS.find(x=>x.id===id);
+    const st=card.querySelector('.f-status').value;
+    let dueV=card.querySelector('.f-due').value.trim();
+    if(st==='已完成') dueV='';   // 已完成免填
+    items.push({
+      itemId:id, tiao:it.tiao, section:it.section, opinion:it.opinion,
+      status:st, due:dueV,
+      content:card.querySelector('.f-content').value.trim()
     });
-    const catVal = catIdx>=0 ? (row[catIdx]||'') : '';
-    return `<tr data-cat="${String(catVal).replace(/"/g,'&quot;')}">${tds}</tr>`;
-  }).join('');
-  const legend = `<div class="detail-legend">作答對照：
-    ${[5,4,3,2,1].map(n=>`<span><i style="background:${LK[n].bg};color:${LK[n].fg}">${n}</i>${LK[n].t}</span>`).join('')}
-  </div>`;
-  const rr = key==='pgy' ? DATA.pgy.stu_rr : DATA.tea.tea_rr;
-  const cats = Object.entries(rr).filter(([k,v])=>k!=='_total' && typeof v.req==='number')
-     .map(([k,v])=>({name:k, req:v.req, got:(typeof v.got==='number'?v.got:0)}));
-  const allChip = `<span class="chip allc active" onclick="filterDetail('${key}','__all__',this)">全部　已填 <b>${rr._total.got}</b>／應填 ${rr._total.req}</span>`;
-  const chips = allChip + cats.map(o=>{
-     const low = o.req>0 && (o.got/o.req)<RR_THR;
-     return `<span class="chip ${low?'low':''}" onclick="filterDetail('${key}','${o.name}',this)">${o.name}　已填 <b>${o.got}</b>／應填 ${o.req}</span>`;
-  }).join('');
-  const rrPass = rr._total.rate>=RR_THR;
-  const summary = `<div class="detail-sum">
-     <span class="big">應填 <b>${rr._total.req}</b> 人</span>
-     <span class="big">已填 <b>${rr._total.got}</b> 人</span>
-     <span class="big">回收率 <span class="rr" style="color:${rrPass?'var(--pass)':'var(--fail)'}">${pct(rr._total.rate)}</span>
-        <span style="font-size:.82rem;font-weight:600;color:var(--muted)">（門檻 70%）</span></span>
-   </div>
-   <div class="cat-chips">${chips}</div>`;
-  return `<div class="card panel">
-    <h4>${key==='pgy'?'受訓人員（PGY學員）':'教師'}問卷 · 表單回覆明細</h4>
-    ${summary}
-    <div class="detail-meta">點上方職類可篩選　·　欄名滑鼠移上可顯示完整題目　·　表格可左右／上下捲動</div>
-    <div class="detail-count" id="count-${key}">目前顯示 <b>${raw.rows.length}</b> 筆（全部）</div>
-    ${legend}
-    <div class="detail-wrap"><table class="detail-tbl" id="detailtbl-${key}">
-      <thead>${head}</thead><tbody>${body}</tbody>
-    </table></div>
-  </div>`;
+  });
+  return {
+    action:'submit', role:currentRole,
+    filler:$('#filler').value.trim(), ext:$('#ext').value.trim(), email:$('#email').value.trim(),
+    items
+  };
 }
 
-document.getElementById('pane-stu').innerHTML = renderPane('pgy');
-document.getElementById('pane-tea').innerHTML = renderPane('tea');
-document.getElementById('pane-rule').innerHTML = renderRules();
-document.getElementById('pane-sturaw').innerHTML = renderDetail('pgy');
-document.getElementById('pane-tearaw').innerHTML = renderDetail('tea');
+$('#submitBtn').addEventListener('click', async ()=>{
+  if(isClosed()){ alert('填報已截止。'); return; }
+  if(!currentRole){ alert('請先選擇職類。'); return; }
+  if(!$('#filler').value.trim()){ alert('請填寫填表人姓名。'); $('#filler').focus(); return; }
+  const payload=collectPayload();
+  if(payload.items.length===0){ alert('沒有可送出的條號。'); return; }
+  const btn=$('#submitBtn'); btn.disabled=true; btn.innerHTML='<i class="fa-solid fa-spinner fa-spin mr-2"></i>資料傳送中…';
+  try{
+    await fetch(CONFIG.GAS_URL,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},
+      body:new URLSearchParams({payload:JSON.stringify(payload)})});
+  }catch(e){}
+  // 不論 POST 是否讀得到回應，一律用 JSONP 查證是否真的寫入
+  try{
+    const chk=await jsonp('action=load&role='+encodeURIComponent(currentRole));
+    const savedIds=(chk&&chk.rows||[]).map(r=>r.itemId);
+    const ok=payload.items.every(i=>savedIds.includes(i.itemId));
+    if(ok){ showThanks(); }
+    else { alert('⚠️ 似乎尚未完全寫入，請再按一次「送出更新」，或稍後用同職類重新進入確認。'); }
+  }catch(e){ alert('送出後暫時無法確認結果，請稍後重新以同職類進入本頁查看是否已帶出您的內容。'); }
+  finally{ btn.disabled=isClosed(); btn.innerHTML=isClosed()?'<i class="fa-solid fa-lock mr-2"></i>填報已截止':'<i class="fa-solid fa-paper-plane mr-2"></i>送 出 更 新'; }
+});
 
-function filterDetail(key, cat, chipEl){
-  const tbl = document.getElementById('detailtbl-'+key);
-  const rows = tbl.tBodies[0].rows;
-  let shown = 0;
-  for(const tr of rows){
-    const match = (cat==='__all__') || (tr.getAttribute('data-cat')===cat);
-    tr.style.display = match ? '' : 'none';
-    if(match) shown++;
-  }
-  // active chip toggle within this pane
-  const chips = chipEl.parentElement.querySelectorAll('.chip');
-  chips.forEach(c=>c.classList.remove('active'));
-  chipEl.classList.add('active');
-  const label = cat==='__all__' ? '全部' : cat;
-  document.getElementById('count-'+key).innerHTML = `目前顯示 <b>${shown}</b> 筆（${label}）`;
+/* ============ 產生 Word（.doc） ============ */
+function wordWrap(inner){
+  return '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">'
+    +'<head><meta charset="utf-8"><style>'
+    +'@page{size:A4 landscape;margin:1.5cm;} body{font-family:"標楷體","DFKai-SB","Microsoft JhengHei",serif;font-size:11pt;}'
+    +'table{border-collapse:collapse;width:100%;} th,td{border:1px solid #000;padding:5px 7px;vertical-align:top;} '
+    +'th{background:#e8eef7;text-align:center;} .ctr{text-align:center;} h2,h3{text-align:center;margin:6px 0;}'
+    +'</style></head><body>'+inner+'</body></html>';
+}
+function statusMark(st,which){ return st===which?'V':''; }
+function rowHTML(tiao,opinion,status,due,content){
+  return '<tr>'
+    +'<td class="ctr">'+esc(tiao)+'</td>'
+    +'<td>'+esc(opinion).replace(/\n/g,'<br>')+'</td>'
+    +'<td></td>'
+    +'<td class="ctr">'+statusMark(status,'已完成')+'</td>'
+    +'<td class="ctr">'+statusMark(status,'執行中')+'</td>'
+    +'<td class="ctr">'+statusMark(status,'未執行')+'</td>'
+    +'<td class="ctr">'+(status==='已完成'?'':esc(due))+'</td>'
+    +'<td>'+esc(content).replace(/\n/g,'<br>')+'</td>'
+    +'</tr>';
+}
+function tableHead(){
+  return '<h2>'+esc(CONFIG.REPORT_TITLE)+'</h2><h3>醫院改善事項執行成果一覽表</h3><h3 style="text-align:left">二、教學醫院評鑑部分</h3>'
+    +'<table><thead><tr>'
+    +'<th rowspan="2">條號</th><th rowspan="2">委員評量意見</th><th rowspan="2">委員訪查<br>意見回饋</th>'
+    +'<th colspan="3">執行狀況</th><th rowspan="2">預定完成年月<br>(已完成免填)</th><th rowspan="2">目前執行情形<br>(或尚未執行理由)</th></tr>'
+    +'<tr><th>已完成</th><th>執行中</th><th>未執行</th></tr></thead><tbody>';
+}
+function downloadDoc(filename, innerRows){
+  const html=wordWrap(tableHead()+innerRows+'</tbody></table>');
+  const blob=new Blob(['\ufeff'+html],{type:'application/msword'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=filename; a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1500);
 }
 
-/* ---------- enlarged header tooltip ---------- */
+$('#wordBtn').addEventListener('click', ()=>{
+  if(!currentRole){ alert('請先選擇職類。'); return; }
+  const p=collectPayload();
+  const rows=p.items.map(i=>rowHTML(i.tiao,i.opinion,i.status,i.due,i.content)).join('');
+  downloadDoc('教學評鑑改善進度_'+currentRole+'.doc', rows);
+});
+
+/* ================= 承辦人彙整後台 ================= */
+async function initAdmin(token){
+  $('#fillView').classList.add('hidden'); $('#adminView').classList.remove('hidden');
+  $('#adminSub').innerText='載入中…';
+  let rows=[];
+  try{ const r=await jsonp('action=list&token='+encodeURIComponent(token)); if(r&&r.result==='list'){ rows=r.rows||[]; } else { $('#adminSub').innerText='通行碼錯誤或無資料。'; return; } }
+  catch(e){ $('#adminSub').innerText='連線失敗。'; return; }
+  renderAdmin(rows);
+}
+function submittedRoles(){ const s=new Set(); ITEMS.forEach(it=>it.roles.forEach(x=>s.add(x.role))); return [...s]; }
+function renderAdmin(rows){
+  const key=(role,id)=>role+'||'+id;
+  const filled=new Set(rows.map(r=>key(r.role,r.itemId)));
+  const cnt={}; rows.forEach(r=>{ const k=key(r.role,r.itemId); cnt[k]=(cnt[k]||0)+1; });
+  const allRoles = ROLE_ORDER.filter(r=>ITEMS.some(it=>it.roles.some(x=>x.role===r)));
+  // 需填總格數
+  let need=0; ITEMS.forEach(it=>need+=it.roles.length);
+  const got = filled.size;
+  $('#adminSub').innerText='截止：民國115年8月8日　·　共 '+ITEMS.length+' 條號、'+need+' 個職類格　·　綠格右上「×N」＝該格修改送出次數（歷程留存）';
+  $('#adminStats').innerHTML =
+    stat('應填格數',need,'text-white')+stat('已填格數',got,'text-emerald-400')+
+    stat('未填格數',need-got,'text-rose-400')+stat('完成率',(need?Math.round(got/need*100):0)+'%','text-sky-400');
+  // 各職類進度
+  const nag=[];
+  const roleBlocks=allRoles.map(role=>{
+    const its=ITEMS.filter(it=>it.roles.some(x=>x.role===role));
+    const done=its.filter(it=>filled.has(key(role,it.id)));
+    const miss=its.filter(it=>!filled.has(key(role,it.id)));
+    if(miss.length) nag.push(role+'：尚缺 '+miss.map(m=>m.tiao).join('、'));
+    const pills=its.map(it=>{
+      const kk=key(role,it.id); const ok=filled.has(kk); const c=cnt[kk]||0;
+      const ex=(ok&&c>1)?'<sup style="font-size:9px;margin-left:1px">×'+c+'</sup>':'';
+      return '<span class="badge '+(ok?'bg-emerald-500/20 text-emerald-300':'bg-rose-500/15 text-rose-300')+'">'+(ok?'<i class="fa-solid fa-check"></i>':'<i class="fa-solid fa-xmark"></i>')+esc(it.tiao)+ex+'</span>';
+    }).join(' ');
+    return '<div class="glass-card rounded-xl p-4"><div class="flex items-center justify-between mb-2"><b class="text-white">'+esc(role)+'</b>'
+      +'<span class="text-sm '+(miss.length?'text-rose-400':'text-emerald-400')+'">'+done.length+'/'+its.length+'</span></div>'
+      +'<div class="flex flex-wrap gap-1.5">'+pills+'</div></div>';
+  }).join('');
+  $('#adminGrid').innerHTML=roleBlocks;
+  window.__NAG=nag.join('\n'); window.__ROWS=rows;
+}
+function stat(label,val,cls){ return '<div class="glass-card rounded-xl p-4 text-center"><div class="text-slate-400 text-xs mb-1">'+label+'</div><div class="text-2xl font-black '+cls+'">'+val+'</div></div>'; }
+
+$('#copyNagBtn').addEventListener('click',()=>{ const t=window.__NAG||''; if(!t){alert('目前全部填齊，無待催名單 🎉');return;} navigator.clipboard.writeText(t).then(()=>alert('已複製待催填名單：\n\n'+t)).catch(()=>prompt('請手動複製：',t)); });
+$('#refreshBtn').addEventListener('click',()=>initAdmin(new URLSearchParams(location.search).get('admin')));
+
+/* 彙整 Word：同條號多職類自動編號分列，比照原格式 */
+$('#aggBtn').addEventListener('click',()=>{
+  const rows=window.__ROWS||[];
+  const map={}; rows.forEach(r=>{ map[r.role+'||'+r.itemId]=r; });
+  const inner=ITEMS.map(it=>{
+    let status=it.section, due=it.due; // 預設
+    let content;
+    if(it.roles.length===1){
+      const r=map[it.roles[0].role+'||'+it.id];
+      status=r?r.status:'執行中'; due=r?r.due:it.due;
+      content=r&&r.content?r.content:it.roles[0].prefill;
+    } else {
+      // 多職類：依 ROLE_ORDER 編號
+      const ordered=ROLE_ORDER.filter(role=>it.roles.some(x=>x.role===role));
+      const parts=ordered.map((role,idx)=>{
+        const r=map[role+'||'+it.id];
+        const seg=it.roles.find(x=>x.role===role);
+        const txt=(r&&r.content)?r.content:(seg?seg.prefill:'');
+        // 去掉原本開頭的「N.職類：」避免重複，統一重新編號
+        const cleaned=txt.replace(/^\s*\d+\s*[\.、]\s*[\u4e00-\u9fff、]{2,12}?\s*[：:]\s*/,'');
+        return (idx+1)+'.'+role+'：'+cleaned;
+      });
+      content=parts.join('\n');
+      // 狀況：多職類時保留「執行中」（與原表一致，逐職類細節寫在內文）
+      const anyDone = ordered.every(role=>{ const r=map[role+'||'+it.id]; return r&&r.status==='已完成'; });
+      status = anyDone?'已完成':'執行中';
+    }
+    return rowHTML(it.tiao, it.opinion, status, due, content);
+  }).join('');
+  downloadDoc('教學評鑑改善進度_彙整一覽表.doc', inner);
+});
+
+/* ================= 送出成功：灑花感謝 ================= */
+function runConfetti(){
+  const c=document.getElementById('confetti'); if(!c) return;
+  const ctx=c.getContext('2d'); c.width=window.innerWidth; c.height=window.innerHeight;
+  const colors=['#38bdf8','#22d3ee','#a78bfa','#f472b6','#34d399','#fbbf24','#fb7185'];
+  const parts=[];
+  for(let i=0;i<150;i++) parts.push({
+    x:Math.random()*c.width, y:-20-Math.random()*c.height*0.4,
+    w:6+Math.random()*7, h:8+Math.random()*9, vy:2+Math.random()*3.2, vx:-1.6+Math.random()*3.2,
+    rot:Math.random()*6.28, vr:-0.2+Math.random()*0.4, col:colors[i%colors.length]
+  });
+  const t0=performance.now();
+  (function frame(now){
+    const el=now-t0; ctx.clearRect(0,0,c.width,c.height);
+    parts.forEach(p=>{ p.x+=p.vx; p.y+=p.vy; p.rot+=p.vr;
+      ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot);
+      ctx.fillStyle=p.col; ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h); ctx.restore(); });
+    if(el<3000) requestAnimationFrame(frame); else ctx.clearRect(0,0,c.width,c.height);
+  })(t0);
+}
+function showThanks(){ document.getElementById('thanksOverlay').style.display='flex'; runConfetti(); }
+document.getElementById('thanksClose').addEventListener('click', ()=>document.getElementById('thanksOverlay').style.display='none');
+
+/* ================= 進入點 ================= */
 (function(){
-  const qtip=document.getElementById('qtip');
-  function place(e){
-    const pad=14; let x=e.clientX+pad, y=e.clientY+20;
-    const w=qtip.offsetWidth, h=qtip.offsetHeight;
-    if(x+w>window.innerWidth-8) x=window.innerWidth-8-w;
-    if(y+h>window.innerHeight-8) y=e.clientY-10-h;
-    if(x<8) x=8; if(y<8) y=8;
-    qtip.style.left=x+'px'; qtip.style.top=y+'px';
-  }
-  document.addEventListener('mouseover',e=>{
-    const el=e.target.closest('.detail-tbl [data-full]');
-    if(!el) return;
-    qtip.textContent=el.getAttribute('data-full');
-    qtip.style.display='block';
-    place(e);
-  });
-  document.addEventListener('mousemove',e=>{
-    if(qtip.style.display==='block') place(e);
-  });
-  document.addEventListener('mouseout',e=>{
-    if(e.target.closest('.detail-tbl [data-full]')) qtip.style.display='none';
-  });
+  const admin=new URLSearchParams(location.search).get('admin');
+  if(admin){ if(admin===CONFIG.ADMIN_TOKEN){ initAdmin(admin);} else { $('#adminView').classList.remove('hidden'); $('#fillView').classList.add('hidden'); $('#adminSub').innerText='通行碼錯誤。'; } }
 })();
-
-function showTab(which){
-  const map={stu:'tabStu',sturaw:'tabStuRaw',tea:'tabTea',tearaw:'tabTeaRaw',rule:'tabRule'};
-  Object.keys(map).forEach(k=>{
-    document.getElementById('pane-'+k).classList.toggle('hide', k!==which);
-    document.getElementById(map[k]).classList.toggle('on', k===which);
-  });
-}
 </script>
 </body>
 </html>
